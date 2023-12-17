@@ -6,27 +6,28 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Link from '@mui/material/Link';
+import ReleaseCardsAlbum from './ReleaseCardsAlbum';
 
 const defaultTheme = createTheme();
 
-export default function PlaySong() {
+export default function AlbumDetails() {
   const { id } = useParams();
-  const [songDetails, setSongDetails] = useState({});
+  const [albumDetails, setAlbumDetails] = useState({});
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchSongDetails = async () => {
+    const fetchAlbumDetails = async () => {
       setError(null);
 
       try {
-        const response = await axiosInstance.get(`/songs/${id}/`);
-        setSongDetails(response.data);
+        const response = await axiosInstance.get(`/albums/${id}/`);
+        setAlbumDetails(response.data);
       } catch (error) {
         setError(error);
       }
     };
 
-    fetchSongDetails();
+    fetchAlbumDetails();
   }, [id]);
 
   return (
@@ -34,21 +35,19 @@ export default function PlaySong() {
       <CssBaseline />
       <main>
         <Container sx={{ py: 8 }} maxWidth="xl">
-          {error && <p>Error loading song details. Error: {error.message}.</p>}
-          {Object.keys(songDetails).length > 0 && (
+          {error && <p>Error loading album details. Error: {error.message}.</p>}
+          {Object.keys(albumDetails).length > 0 && (
             <div>
               <img
-                src={songDetails.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
-                alt="Song Cover"
+                src={albumDetails.cover_image || 'https://wallpapers.com/images/featured/the-beauty-of-minimalist-music-0y4974i4hkly0qjv.jpg'}
+                alt="Album Cover"
                 style={{ maxWidth: '50%' }}
               />
               <Typography variant="h6" color="text.primary" paragraph>
-                {songDetails.title}
-                {songDetails.release_date}
-                {songDetails.genre}
-                {songDetails.album}
+                {albumDetails.title}
+                {albumDetails.release_date}
               </Typography>
-              {Object.entries(songDetails.artists_usernames).map(([artistId, username], index, array) => (
+              {Object.entries(albumDetails.artists_usernames).map(([artistId, username], index, array) => (
                 <React.Fragment key={artistId}>
                   <Link href={`/users/${artistId}/`} variant="body2">
                     {username}
@@ -56,13 +55,10 @@ export default function PlaySong() {
                   {index < array.length - 1 && ', '}
                 </React.Fragment>
               ))}
-              <audio controls>
-                <source src={songDetails.audio_file} type="audio/mp3" />
-                Your browser does not support the audio tag.
-              </audio>
             </div>
           )}
         </Container>
+        <ReleaseCardsAlbum url={`/songs/?album__id=${id}`} infiniteScroll={true}/>
       </main>
     </ThemeProvider>
   );

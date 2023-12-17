@@ -6,6 +6,7 @@ import Home from './Home';
 import PlaySong from './PlaySong';
 import ReleaseCardsAlbum from './ReleaseCardsAlbum';
 import Navbar from './Navbar';
+import AlbumDetails from './AlbumDetails';
 
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
         <Route path='/songs' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <ReleaseCardsAlbum url={"/songs/"} infiniteScroll={true}/> </Layout>} />
         <Route path='/albums' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <ReleaseCardsAlbum url={"/albums/"} infiniteScroll={true}/> </Layout>} />
         <Route path='/songs/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <PlaySong /> </Layout>} />
+        <Route path='/albums/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <AlbumDetails /> </Layout>} />
       </Routes>
     </Router>
   );

@@ -27,6 +27,7 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
 
     try {
       const response = await axiosInstance.get(nextUrl);
+      console.log(nextUrl);
       setReleases((prevReleases) => [...prevReleases, ...response.data.results]);
       setNextUrl(response.data.next);
     } catch (error) {
@@ -41,7 +42,6 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
   };
 
   useEffect(() => {
-    // Strict mode fetches twice, idk react is confusing
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
@@ -71,7 +71,7 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
               dataLength={releases.length}
               next={fetchData}
               hasMore={!!nextUrl && infiniteScroll}
-              loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />}
+              loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />} // Use a spinner for a better loading indicator
               endMessage={<p>No more {releaseType}s to load.</p>}
             >
             <Grid container spacing={4}>
