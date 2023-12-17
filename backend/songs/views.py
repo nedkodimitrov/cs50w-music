@@ -8,6 +8,7 @@ from rest_framework import viewsets, generics, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .serializers import UserSerializer, LoginUserSerializer, SongSerializer, PlaylistSerializer, AlbumSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -103,7 +104,8 @@ class SongViewSet(ReleaseMixin, viewsets.ModelViewSet):
     queryset = Song.objects.all().order_by("-release_date")
     serializer_class = SongSerializer
     permission_classes = [IsArtistOrReadOnly]
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ["artists__id", "album__id"]
     search_fields = ["title", "artists__username"]
 
 
@@ -113,7 +115,8 @@ class AlbumViewSet(ReleaseMixin, viewsets.ModelViewSet):
     queryset = Album.objects.all().order_by("-release_date")
     serializer_class = AlbumSerializer
     permission_classes = [IsArtistOrReadOnly]
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ["artists__id"]
     search_fields = ["title", "artists__username"]
 
 
