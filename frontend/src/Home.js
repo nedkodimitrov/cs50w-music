@@ -1,12 +1,19 @@
 import React from 'react';
 import ReleaseCardsAlbum from './ReleaseCardsAlbum';
-import Navbar from './Navbar';
+import Button from '@mui/material/Button';
 
-const Home = ({ isAuth, setIsAuth }) => {
+const Home = () => {
   return (
     <>
-      <Navbar isAuth={isAuth} setIsAuth={setIsAuth}/>
-      <ReleaseCardsAlbum url={"/songs/"} infiniteScroll={true}/>
+      <ReleaseCardsAlbum url={"/songs/"}/>
+      <Button variant="contained" color="primary" href="/songs" id="all-songs-link">
+        View All Songs
+      </Button>
+      
+      <ReleaseCardsAlbum url={"/albums/"}/>
+      <Button variant="contained" color="primary" href="/albums" id="all-albums-link">
+        View All Albums
+      </Button>
     </>
   );
 };
