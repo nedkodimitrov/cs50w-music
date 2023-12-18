@@ -10,6 +10,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import ReleaseCard from './ReleaseCard';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import { useSearchParams } from 'react-router-dom';
+
 
 
 const defaultTheme = createTheme();
@@ -17,9 +19,13 @@ const defaultTheme = createTheme();
 export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
   const [releases, setReleases] = useState([]);
   const [error, setError] = useState(null);
-  const [nextUrl, setNextUrl] = useState(url);
   const isInitialMount = useRef(true);
   const releaseType = url.startsWith("/songs") ? "song" : "album";
+  
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  
+  const [nextUrl, setNextUrl] = useState(`${url}${searchQuery ? `?search=${searchQuery}` : ''}`);
 
   // Fetch data and retry if response status is 429 Too many requests
   const fetchData = async () => {
@@ -71,7 +77,7 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
               dataLength={releases.length}
               next={fetchData}
               hasMore={!!nextUrl && infiniteScroll}
-              loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />} // Use a spinner for a better loading indicator
+              loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />}
               endMessage={<p>No more {releaseType}s to load.</p>}
             >
             <Grid container spacing={4}>

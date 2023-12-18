@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import Home from './Home';
@@ -13,7 +13,7 @@ const App = () => {
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem('token'));
 
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         <Route path='/' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}><Home /></Layout>} />
         <Route path='/login' element={<SignIn setIsAuth={setIsAuth}/>}/>
@@ -23,7 +23,7 @@ const App = () => {
         <Route path='/songs/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <PlaySong /> </Layout>} />
         <Route path='/albums/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <AlbumDetails /> </Layout>} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 };
 
