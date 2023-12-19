@@ -4,7 +4,7 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 import Home from './Home';
 import PlaySong from './PlaySong';
-import ReleaseCardsAlbum from './ReleaseCardsAlbum';
+import ReleaseCardsCollection from './ReleaseCardsCollection';
 import Navbar from './Navbar';
 import AlbumDetails from './AlbumDetails';
 
@@ -18,8 +18,8 @@ const App = () => {
         <Route path='/' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}><Home /></Layout>} />
         <Route path='/login' element={<SignIn setIsAuth={setIsAuth}/>}/>
         <Route path='/register' element={<SignUp setIsAuth={setIsAuth}/>}/>
-        <Route path='/songs' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <ReleaseCardsAlbum url={"/songs/"} infiniteScroll={true}/> </Layout>} />
-        <Route path='/albums' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <ReleaseCardsAlbum url={"/albums/"} infiniteScroll={true}/> </Layout>} />
+        <Route path='/songs' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <ReleaseCardsCollection url={"/songs/"} infiniteScroll={true}/> </Layout>} />
+        <Route path='/albums' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <ReleaseCardsCollection url={"/albums/"} infiniteScroll={true}/> </Layout>} />
         <Route path='/songs/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <PlaySong /> </Layout>} />
         <Route path='/albums/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <AlbumDetails /> </Layout>} />
       </Routes>

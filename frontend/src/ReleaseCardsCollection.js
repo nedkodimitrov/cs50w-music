@@ -16,7 +16,7 @@ import { useSearchParams } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
-export default function ReleaseCardsAlbum({url, infiniteScroll = false, setNum = (number) => {}}) {
+export default function ReleaseCardsCollection({url, infiniteScroll = false, setNum = (number) => {}}) {
   const [releases, setReleases] = useState([]);
   const [error, setError] = useState(null);
   const isInitialMount = useRef(true);

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import ReleaseCardsAlbum from './ReleaseCardsAlbum';
+import ReleaseCardsCollection from './ReleaseCardsCollection';
 import Button from '@mui/material/Button';
 import { useSearchParams } from 'react-router-dom';
 
@@ -12,8 +12,8 @@ const Home = () => {
 
   return (
     <div key={queryParamsString}> {/* re-render when query params change */}
-      {/*ReleaseCardsAlbum parses the query params*/}
-      <ReleaseCardsAlbum url={`/songs/`} setNum={setNumSongs}/>
+      {/*ReleaseCardsCollection parses the query params*/}
+      <ReleaseCardsCollection url={`/songs/`} setNum={setNumSongs}/>
       { numSongs > 10 && 
         <Button 
           variant="contained" 
@@ -24,7 +24,7 @@ const Home = () => {
         </Button> 
       }
       
-      <ReleaseCardsAlbum url={`/albums/`} setNum={setNumAlbums}/>
+      <ReleaseCardsCollection url={`/albums/`} setNum={setNumAlbums}/>
       { numAlbums > 10 &&
         <Button 
           variant="contained" 

@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Link from '@mui/material/Link';
-import ReleaseCardsAlbum from './ReleaseCardsAlbum';
+import ReleaseCardsCollection from './ReleaseCardsCollection';
 
 const defaultTheme = createTheme();
 
@@ -58,7 +58,7 @@ export default function AlbumDetails() {
             </div>
           )}
         </Container>
-        <ReleaseCardsAlbum url={`/songs/?album__id=${id}`} infiniteScroll={true}/>
+        <ReleaseCardsCollection url={`/songs/?album__id=${id}`} infiniteScroll={true}/>
       </main>
     </ThemeProvider>
   );
