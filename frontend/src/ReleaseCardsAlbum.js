@@ -37,7 +37,7 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
       setReleases((prevReleases) => [...prevReleases, ...response.data.results]);
       setNextUrl(response.data.next);
     } catch (error) {
-      if (error.response && error.response.status === 429) {
+      if (error.response?.status === 429) {
         console.warn("Rate limit exceeded. Retrying after a short delay.");
         await new Promise(resolve => setTimeout(resolve, 1000));
         return fetchData();
@@ -59,13 +59,7 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <main>
-        <Box
-          sx={{
-            bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6,
-          }}
-        >
+      <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6 }}>
           <Container maxWidth="sm">
             <Typography variant="h5" align="center" color="text.primary" paragraph>
               {releaseType}s
@@ -73,17 +67,17 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
           </Container>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="xl">
-            <InfiniteScroll
-              dataLength={releases.length}
-              next={fetchData}
-              hasMore={!!nextUrl && infiniteScroll}
-              loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />}
-              endMessage={<p>No more {releaseType}s to load.</p>}
-            >
+        <InfiniteScroll
+            dataLength={releases.length}
+            next={(nextUrl) => fetchData(nextUrl)}
+            hasMore={!!nextUrl && infiniteScroll}
+            loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />}
+            endMessage={infiniteScroll && <p>No more {releaseType}s to load.</p>}
+          >
             <Grid container spacing={4}>
               {releases.map((release) => (
                 <Grid item key={release.id} xs={6} sm={4} md={3} lg={2}>
-                  <ReleaseCard release={release} releaseType={releaseType}/>
+                  <ReleaseCard release={release} releaseType={releaseType} />
                 </Grid>
               ))}
             </Grid>
