@@ -10,16 +10,22 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import ReleaseCard from './ReleaseCard';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import { useSearchParams } from 'react-router-dom';
+
 
 
 const defaultTheme = createTheme();
 
-export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
+export default function ReleaseCardsCollection({url, infiniteScroll = false, setNum = (number) => {}}) {
   const [releases, setReleases] = useState([]);
   const [error, setError] = useState(null);
-  const [nextUrl, setNextUrl] = useState(url);
   const isInitialMount = useRef(true);
   const releaseType = url.startsWith("/songs") ? "song" : "album";
+  
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  
+  const [nextUrl, setNextUrl] = useState(`${url}${searchQuery ? `?search=${searchQuery}` : ''}`);
 
   // Fetch data and retry if response status is 429 Too many requests
   const fetchData = async () => {
@@ -27,10 +33,12 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
 
     try {
       const response = await axiosInstance.get(nextUrl);
+      console.log(nextUrl);
       setReleases((prevReleases) => [...prevReleases, ...response.data.results]);
       setNextUrl(response.data.next);
+      setNum(response.data.count);
     } catch (error) {
-      if (error.response && error.response.status === 429) {
+      if (error.response?.status === 429) {
         console.warn("Rate limit exceeded. Retrying after a short delay.");
         await new Promise(resolve => setTimeout(resolve, 1000));
         return fetchData();
@@ -52,13 +60,7 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <main>
-        <Box
-          sx={{
-            bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6,
-          }}
-        >
+      <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6 }}>
           <Container maxWidth="sm">
             <Typography variant="h5" align="center" color="text.primary" paragraph>
               {releaseType}s
@@ -66,17 +68,17 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
           </Container>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="xl">
-            <InfiniteScroll
-              dataLength={releases.length}
-              next={fetchData}
-              hasMore={!!nextUrl && infiniteScroll}
-              loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />} // Use a spinner for a better loading indicator
-              endMessage={<p>No more {releaseType}s to load.</p>}
-            >
+        <InfiniteScroll
+            dataLength={releases.length}
+            next={(nextUrl) => fetchData(nextUrl)}
+            hasMore={!!nextUrl && infiniteScroll}
+            loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />}
+            endMessage={infiniteScroll && <p>No more {releaseType}s to load.</p>}
+          >
             <Grid container spacing={4}>
               {releases.map((release) => (
                 <Grid item key={release.id} xs={6} sm={4} md={3} lg={2}>
-                  <ReleaseCard release={release} releaseType={releaseType}/>
+                  <ReleaseCard release={release} releaseType={releaseType} />
                 </Grid>
               ))}
             </Grid>

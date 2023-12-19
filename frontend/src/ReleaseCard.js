@@ -16,7 +16,12 @@ export default function ReleaseCard({release, releaseType}) {
                     // 16:9
                     pt: '56.25%',
                 }}
-                image={release.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
+                image={
+                    release.cover_image ||
+                    (releaseType === "song"
+                      ? 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'
+                      : 'https://wallpapers.com/images/featured/the-beauty-of-minimalist-music-0y4974i4hkly0qjv.jpg')
+                  }                  
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h5" component="h2">
