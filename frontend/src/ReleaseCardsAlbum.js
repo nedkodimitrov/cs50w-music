@@ -16,7 +16,7 @@ import { useSearchParams } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
-export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
+export default function ReleaseCardsAlbum({url, infiniteScroll = false, setNum = (number) => {}}) {
   const [releases, setReleases] = useState([]);
   const [error, setError] = useState(null);
   const isInitialMount = useRef(true);
@@ -36,6 +36,7 @@ export default function ReleaseCardsAlbum({url, infiniteScroll=false}) {
       console.log(nextUrl);
       setReleases((prevReleases) => [...prevReleases, ...response.data.results]);
       setNextUrl(response.data.next);
+      setNum(response.data.count);
     } catch (error) {
       if (error.response?.status === 429) {
         console.warn("Rate limit exceeded. Retrying after a short delay.");

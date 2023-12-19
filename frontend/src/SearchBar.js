@@ -51,7 +51,7 @@ export default function SearchBar() {
     if (event.key === 'Enter') {
       const searchQuery = event.target.value;
 
-      navigate({search: `?search=${searchQuery}` });
+      navigate({pathname: '/', search: `?search=${searchQuery}` });
     }
   };
 
