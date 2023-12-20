@@ -1,4 +1,7 @@
-// SearchBar.jsx
+/*
+* Search bar that navigates to home with a search parameter of the contents of the search input box
+*/
+
 import React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
@@ -48,10 +51,12 @@ export default function SearchBar() {
   const navigate = useNavigate();
 
   const handleKeyDown = (event) => {
+    // When user presses enter navigate to home with a search parameter of the contents of the search input box
     if (event.key === 'Enter') {
       const searchQuery = event.target.value;
-
-      navigate({pathname: '/', search: `?search=${searchQuery}` });
+      if (searchQuery) {
+        navigate({pathname: '/', search: `?search=${searchQuery}` });
+      }
     }
   };
 

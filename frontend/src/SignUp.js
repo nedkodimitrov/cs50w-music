@@ -123,19 +123,19 @@ export default function SignUp({setIsAuth}) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="first_name"
                   fullWidth
-                  id="firstName"
+                  id="first-name"
                   label="First Name"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
                   autoComplete="family-name"
+                  name="last_name"
+                  fullWidth
+                  id="last-name"
+                  label="Last Name"
                 />
               </Grid>
               <Grid item xs={12}>
