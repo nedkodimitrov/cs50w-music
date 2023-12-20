@@ -1,6 +1,3 @@
-/*
-* Routes in the React application
-*/
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SignIn from './SignIn';
@@ -22,15 +19,24 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/login' element={<SignIn setIsAuth={setIsAuth}/>}/>
-        <Route path='/register' element={<SignUp setIsAuth={setIsAuth}/>}/>
-        <Route path='/' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}><Home /></Layout>} />
-        <Route path='/songs' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <CardsCollection url={"/songs/"} infiniteScroll={true}/> </Layout>} />
-        <Route path='/songs/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <PlaySong /> </Layout>} />
-        <Route path='/albums' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <CardsCollection url={"/albums/"} infiniteScroll={true}/> </Layout>} />
-        <Route path='/albums/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <AlbumDetails /> </Layout>} />
-        <Route path='/users' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <CardsCollection url={"/users/"} infiniteScroll={true}/> </Layout>} />
-        <Route path='/users/:id' element={<Layout isAuth={isAuth} setIsAuth={setIsAuth}> <UserDetails /> </Layout>} />
+        <Route path='/login' element={<SignIn setIsAuth={setIsAuth} />} />
+        <Route path='/register' element={<SignUp setIsAuth={setIsAuth} />} />
+        <Route
+          path='/*'
+          element={
+            <Layout isAuth={isAuth} setIsAuth={setIsAuth}>
+              <Routes>
+                <Route index element={<Home />} />
+                <Route path='/songs' element={<CardsCollection url={"/songs/"} infiniteScroll={true} />} />
+                <Route path='/songs/:id' element={<PlaySong />} />
+                <Route path='/albums' element={<CardsCollection url={"/albums/"} infiniteScroll={true} />} />
+                <Route path='/albums/:id' element={<AlbumDetails />} />
+                <Route path='/users' element={<CardsCollection url={"/users/"} infiniteScroll={true} />} />
+                <Route path='/users/:id' element={<UserDetails />} />
+              </Routes>
+            </Layout>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
@@ -38,7 +44,7 @@ const App = () => {
 
 const Layout = ({ isAuth, setIsAuth, children }) => (
   <>
-    <Navbar isAuth={isAuth} setIsAuth={setIsAuth}/>
+    <Navbar isAuth={isAuth} setIsAuth={setIsAuth} />
     {children}
   </>
 );
