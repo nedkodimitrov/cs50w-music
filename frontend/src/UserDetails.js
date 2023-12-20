@@ -37,26 +37,28 @@ export default function UserDetails() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <main>
-        <Container sx={{ py: 8 }} maxWidth="xl">
+        <main>
           {error && <p>Error loading user details. Error: {error.message}.</p>}
           {Object.keys(userDetails).length > 0 && (
-            <div>
-              {/* Information about the user */}
-              <Typography variant="h6" color="text.primary" paragraph>
-                {userDetails.username}
-                {userDetails.first_name}
-                {userDetails.last_name}
-                {userDetails.country}
-                {userDetails.birth_date}
-              </Typography>
-            </div>
-          )}
-        </Container>
+            <>
+            <Container sx={{ py: 8 }} maxWidth="xl">
+                <div>
+                  {/* Information about the user */}
+                  <Typography variant="h6" color="text.primary" paragraph>
+                    {userDetails.username}
+                    {userDetails.first_name}
+                    {userDetails.last_name}
+                    {userDetails.country}
+                    {userDetails.birth_date}
+                  </Typography>
+                </div>
+            </Container>
 
-        {/* Songs and Albums by the user */}
-        <CompactCardsCollection url={`/songs/?artists__id=${id}`} />
-        <CompactCardsCollection url={`/albums/?artists__id=${id}`} />
+            {/* Songs and Albums by the user */}
+            <CompactCardsCollection url={`/songs/?artists__id=${userDetails.id}`} />
+            <CompactCardsCollection url={`/albums/?artists__id=${userDetails.id}`} />
+          </>
+        )}
       </main>
     </ThemeProvider>
   );

@@ -38,44 +38,46 @@ export default function PlaySong() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <main>
-        <Container sx={{ py: 8 }} maxWidth="xl">
+        <main>
           {error && <p>Error loading song details. Error: {error.message}.</p>}
           {Object.keys(songDetails).length > 0 && (
-            <div>
-              {/*Song cover image or default image for songs */}
-              <img
-                src={songDetails.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
-                alt="Song Cover"
-                style={{ maxWidth: '50%' }}
-              />
+          <>
+            <Container sx={{ py: 8 }} maxWidth="xl">
+              <div>
+                {/*Song cover image or default image for songs */}
+                <img
+                  src={songDetails.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
+                  alt="Song Cover"
+                  style={{ maxWidth: '50%' }}
+                />
 
-              {/* Some information about the song like title, release_date, ...*/}
-              <Typography variant="h6" color="text.primary" paragraph>
-                {songDetails.title}
-                {songDetails.release_date}
-                {songDetails.genre}
-                {songDetails.album}
-              </Typography>
+                {/* Some information about the song like title, release_date, ...*/}
+                <Typography variant="h6" color="text.primary" paragraph>
+                  {songDetails.title}
+                  {songDetails.release_date}
+                  {songDetails.genre}
+                  {songDetails.album}
+                </Typography>
 
-              {/* Artists related to the song */}
-              {Object.entries(songDetails.artists_usernames).map(([artistId, username], index, array) => (
-                <React.Fragment key={artistId}>
-                  <Link href={`/users/${artistId}/`} variant="body2">
-                    {username}
-                  </Link>
-                  {index < array.length - 1 && ', '}
-                </React.Fragment>
-              ))}
+                {/* Artists related to the song */}
+                {Object.entries(songDetails.artists_usernames).map(([artistId, username], index, array) => (
+                  <React.Fragment key={artistId}>
+                    <Link href={`/users/${artistId}/`} variant="body2">
+                      {username}
+                    </Link>
+                    {index < array.length - 1 && ', '}
+                  </React.Fragment>
+                ))}
 
-              {/* Audio player for the song audio file*/}
-              <audio controls>
-                <source src={songDetails.audio_file} type="audio/mp3" />
-                Your browser does not support the audio tag.
-              </audio>
-            </div>
-          )}
-        </Container>
+                {/* Audio player for the song audio file*/}
+                <audio controls>
+                  <source src={songDetails.audio_file} type="audio/mp3" />
+                  Your browser does not support the audio tag.
+                </audio>
+              </div>
+            </Container>
+          </>
+        )}
       </main>
     </ThemeProvider>
   );

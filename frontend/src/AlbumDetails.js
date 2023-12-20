@@ -39,39 +39,41 @@ export default function AlbumDetails() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <main>
-        <Container sx={{ py: 8 }} maxWidth="xl">
+        <main>
           {error && <p>Error loading album details. Error: {error.message}.</p>}
           {Object.keys(albumDetails).length > 0 && (
-            <div>
-              {/* Cover image or default image for albums */}
-              <img
-                src={albumDetails.cover_image || 'https://wallpapers.com/images/featured/the-beauty-of-minimalist-music-0y4974i4hkly0qjv.jpg'}
-                alt="Album Cover"
-                style={{ maxWidth: '50%' }}
-              />
+            <>
+              <Container sx={{ py: 8 }} maxWidth="xl">
+                <div>
+                  {/* Cover image or default image for albums */}
+                  <img
+                    src={albumDetails.cover_image || 'https://wallpapers.com/images/featured/the-beauty-of-minimalist-music-0y4974i4hkly0qjv.jpg'}
+                    alt="Album Cover"
+                    style={{ maxWidth: '50%' }}
+                  />
 
-              {/* Album details like title and release date */}
-              <Typography variant="h6" color="text.primary" paragraph>
-                {albumDetails.title}
-                {albumDetails.release_date}
-              </Typography>
-              
-              {/* Artists related to the album */}
-              {Object.entries(albumDetails.artists_usernames).map(([artistId, username], index, array) => (
-                <React.Fragment key={artistId}>
-                  <Link href={`/users/${artistId}/`} variant="body2">
-                    {username}
-                  </Link>
-                  {index < array.length - 1 && ', '}
-                </React.Fragment>
-              ))}
-            </div>
+                  {/* Album details like title and release date */}
+                  <Typography variant="h6" color="text.primary" paragraph>
+                    {albumDetails.title}
+                    {albumDetails.release_date}
+                  </Typography>
+                  
+                  {/* Artists related to the album */}
+                  {Object.entries(albumDetails.artists_usernames).map(([artistId, username], index, array) => (
+                    <React.Fragment key={artistId}>
+                      <Link href={`/users/${artistId}/`} variant="body2">
+                        {username}
+                      </Link>
+                      {index < array.length - 1 && ', '}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </Container>
+
+              {/* Songs featured in the album */}
+              <CardsCollection url={`/songs/?album__id=${albumDetails.id}`} infiniteScroll={true}/>
+            </>
           )}
-        </Container>
-
-        {/* Songs featured in the album */}
-        <CardsCollection url={`/songs/?album__id=${id}`} infiniteScroll={true}/>
       </main>
     </ThemeProvider>
   );
