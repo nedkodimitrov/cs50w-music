@@ -19,16 +19,17 @@ const defaultTheme = createTheme();
 export default function CreateRelease({releaseType="song"}) {
   const [isLoading, setIsLoading] = useState(false);
   const [albums, setAlbums] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const userId = localStorage.getItem('userId')
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
-    // Fetch current user's albums that can be associated with the song
+    // Fetch albums based on the search term and user ID
     const fetchAlbums = async () => {
       try {
-          const response = await axiosInstance.get(`/albums/?artists__id=${userId}`);
-          setAlbums(response.data.results);
+        const response = await axiosInstance.get(`/albums/?artists__id=${userId}&search=${searchTerm}`);
+        setAlbums(response.data.results);
       } catch (error) {
         console.error("Error fetching albums:", error);
       }
@@ -37,7 +38,7 @@ export default function CreateRelease({releaseType="song"}) {
     if (releaseType === "song") {
       fetchAlbums();
     }
-  }, [releaseType]);
+  }, [releaseType, userId, searchTerm]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -58,7 +59,7 @@ export default function CreateRelease({releaseType="song"}) {
       }
     } catch (error) {
       console.log(error);
-      handleErrors(error)
+      handleErrors(error);
       setIsLoading(false);
     }
   };
@@ -73,7 +74,7 @@ export default function CreateRelease({releaseType="song"}) {
         }));
       });
     } else {
-      setErrors({ "message": error.message });
+      setErrors({ message: error.message });
     }
   };
 
@@ -111,20 +112,20 @@ export default function CreateRelease({releaseType="song"}) {
                 />
               </Grid>
               {releaseType === "song" && <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="audio_file"
-                  label="Audio File"
-                  name="audio_file"
-                  type="file"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  error={Boolean(errors.audio_file)}
-                  helperText={errors.audio_file}
-                />
-              </Grid>}
+                  <TextField
+                    required
+                    fullWidth
+                    id="audio_file"
+                    label="Audio File"
+                    name="audio_file"
+                    type="file"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={Boolean(errors.audio_file)}
+                    helperText={errors.audio_file}
+                  />
+                </Grid>}
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -157,25 +158,27 @@ export default function CreateRelease({releaseType="song"}) {
                 />
               </Grid>
               {releaseType === "song" && <Grid item xs={12}>
-                <Select
-                  options={albums.map((album) => ({ value: album.id, label: album.title }))}
-                  placeholder="Select album"
-                  name="album"
-                  id="album"
-                  error={Boolean(errors.album)}
-                  helperText={errors.album}
-                />
-              </Grid>}
+                  <Select
+                    options={albums.map((album) => ({ value: album.id, label: album.title }))}
+                    placeholder="Select album"
+                    name="album"
+                    id="album"
+                    onInputChange={(value) => setSearchTerm(value)}
+                    isSearchable
+                    error={Boolean(errors.album)}
+                    helperText={errors.album}
+                  />
+                </Grid>}
               {releaseType === "song" && <Grid item xs={12}>
-                <Select
-                  options={["rap", "pop", "rock"].map(option => ({ value: option, label: option }))}
-                  placeholder="Select genre"
-                  name="genre"
-                  id="genre"
-                  error={Boolean(errors.genre)}
-                  helperText={errors.genre}
-                />
-              </Grid>}
+                  <Select
+                    options={["rap", "pop", "rock"].map(option => ({ value: option, label: option }))}
+                    placeholder="Select genre"
+                    name="genre"
+                    id="genre"
+                    error={Boolean(errors.genre)}
+                    helperText={errors.genre}
+                  />
+                </Grid>}
             </Grid>
 
             <Typography variant="body2" color="error">
