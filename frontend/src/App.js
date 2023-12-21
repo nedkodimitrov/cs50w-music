@@ -8,6 +8,7 @@ import CardsCollection from './CardsCollection';
 import Navbar from './Navbar';
 import AlbumDetails from './AlbumDetails';
 import UserDetails from './UserDetails';
+import CreateRelease from './CreateRelease'
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem('token'));
@@ -29,8 +30,10 @@ const App = () => {
                 <Route index element={<Home />} />
                 <Route path='/songs' element={<CardsCollection url={"/songs/"} infiniteScroll={true} />} />
                 <Route path='/songs/:id' element={<PlaySong />} />
+                <Route path='/songs/new/' element={<CreateRelease releaseType='song'/>} />
                 <Route path='/albums' element={<CardsCollection url={"/albums/"} infiniteScroll={true} />} />
                 <Route path='/albums/:id' element={<AlbumDetails />} />
+                <Route path='/albums/new/' element={<CreateRelease releaseType='album'/>} />
                 <Route path='/users' element={<CardsCollection url={"/users/"} infiniteScroll={true} />} />
                 <Route path='/users/:id' element={<UserDetails />} />
               </Routes>

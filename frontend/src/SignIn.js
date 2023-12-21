@@ -21,16 +21,11 @@ const SignIn = ({ setIsAuth }) => {
     event.preventDefault();
     const form = event.currentTarget;
 
-    form.reportValidity();
-
-    if (!form.checkValidity()) {
-      return;
-    }
-
     try {
       setIsLoading(true);
       const response = await axiosInstance.post('login/', form);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.user.id);
       setIsAuth(true)
       navigate('/');
     } catch (error) {
@@ -56,7 +51,7 @@ const SignIn = ({ setIsAuth }) => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required

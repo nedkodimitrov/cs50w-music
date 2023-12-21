@@ -4,6 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SignOutMenuItem from './SignOutMenuItem';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function AccountMenu({setIsAuth}) {
@@ -11,6 +12,10 @@ export default function AccountMenu({setIsAuth}) {
 
   const [accountAnchorEl, setAccountAnchorEl] = useState(null);
   const isAccountMenuOpen = Boolean(accountAnchorEl);
+
+  const navigate = useNavigate();
+
+  const userId = localStorage.getItem('userId')
 
   const handleAccountMenuOpen = (event) => {
     setAccountAnchorEl(event.currentTarget);
@@ -49,8 +54,7 @@ export default function AccountMenu({setIsAuth}) {
         open={isAccountMenuOpen}
         onClose={handleAccountMenuClose}
       >
-        <MenuItem onClick={handleAccountMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={handleAccountMenuClose}>My account</MenuItem>
+        <MenuItem onClick={() => {navigate(`/users/${userId}`); handleAccountMenuClose()}}>Profile</MenuItem>
         <SignOutMenuItem setIsAuth={setIsAuth} />
       </Menu>
     </>

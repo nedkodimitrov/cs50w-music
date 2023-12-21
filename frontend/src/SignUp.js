@@ -27,16 +27,11 @@ export default function SignUp({setIsAuth}) {
     event.preventDefault();
     const form = event.currentTarget;
 
-    form.reportValidity();
-
-    if (!form.checkValidity()) {
-      return;
-    }
-
     try {
       setIsLoading(true);
       const response = await axiosInstance.post('register/', form);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.user.id);
       setIsAuth(true)
       navigate('/');
     } catch (error) {
@@ -77,7 +72,7 @@ export default function SignUp({setIsAuth}) {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -148,16 +143,6 @@ export default function SignUp({setIsAuth}) {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Select
-                  options={CountryList().getData()}
-                  placeholder="Select Country"
-                  name="country"
-                  id="country"
-                  error={Boolean(errors.country)}
-                  helperText={errors.country}
-                />
-              </Grid>
-              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   id="birth_date"
@@ -172,6 +157,16 @@ export default function SignUp({setIsAuth}) {
                   }}
                   error={Boolean(errors.birth_date)}
                   helperText={errors.birth_date}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Select
+                  options={CountryList().getData()}
+                  placeholder="Select Country"
+                  name="country"
+                  id="country"
+                  error={Boolean(errors.country)}
+                  helperText={errors.country}
                 />
               </Grid>
             </Grid>
