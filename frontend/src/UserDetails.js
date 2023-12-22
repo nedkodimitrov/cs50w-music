@@ -59,7 +59,7 @@ export default function UserDetails() {
             {userId == userDetails.id && 
               <Button 
                 variant="contained" 
-                color="secondary" 
+                color="primary" 
                 href={`/users/edit/`}
               >
                 Edit your profile

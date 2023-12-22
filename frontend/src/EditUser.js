@@ -58,13 +58,14 @@ export default function EditUser() {
       const response = await axiosInstance.patch(`/users/${userId}/`, form);
       navigate(`/users/${userId}`);
     } catch (error) {
+      console.log(error);
       handleErrors(error);
       setIsLoading(false);
     }
   };
 
   const handleErrors = (error) => {
-    if (error.response && error.response.data) {
+    if (error.response?.data) {
       setErrors({});
       Object.keys(error.response.data).forEach((key) => {
         setErrors((prevErrors) => ({
@@ -79,7 +80,7 @@ export default function EditUser() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box
           sx={{
@@ -95,111 +96,170 @@ export default function EditUser() {
           <Typography component="h1" variant="h5">
             Edit your profile
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="username"
-                  name="username"
-                  required
+
+          <Grid container spacing={6}>
+            <Grid item xs={12} md={8}>
+              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      autoComplete="username"
+                      name="username"
+                      required
+                      fullWidth
+                      id="username"
+                      label="Username"
+                      autoFocus
+                      error={Boolean(errors.username)}
+                      helperText={errors.username}
+                      value={formData.username}
+                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      autoComplete="given-name"
+                      name="first_name"
+                      fullWidth
+                      id="first-name"
+                      label="First Name"
+                      value={formData.first_name}
+                      onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      autoComplete="family-name"
+                      name="last_name"
+                      fullWidth
+                      id="last-name"
+                      label="Last Name"
+                      value={formData.last_name}
+                      onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      id="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      id="birth_date"
+                      label="Birthdate"
+                      name="birth_date"
+                      type="date"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        max: new Date().toISOString().split('T')[0], // Set max date to today
+                      }}
+                      error={Boolean(errors.birth_date)}
+                      helperText={errors.birth_date}
+                      value={formData.birth_date}
+                      onChange={(e) => setFormData({ ...formData, birth_date: e.target.value })}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Select
+                      options={countryOptions}
+                      placeholder="Select Country"
+                      name="country"
+                      id="country"
+                      error={Boolean(errors.country)}
+                      helperText={errors.country}
+                      value={countryOptions.find(option => option.value === formData.country)}
+                      onChange={(selectedOption) => setFormData({ ...formData, country: selectedOption })}
+                    />
+                  </Grid>
+                </Grid>
+                <Typography variant="body2" color="error">
+                  {errors.non_field_errors}
+                  {errors.message}
+                </Typography>
+                <Button
+                  type="submit"
                   fullWidth
-                  id="username"
-                  label="Username"
-                  autoFocus
-                  error={Boolean(errors.username)}
-                  helperText={errors.username}
-                  value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="first_name"
-                  fullWidth
-                  id="first-name"
-                  label="First Name"
-                  value={formData.first_name}
-                  onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="family-name"
-                  name="last_name"
-                  fullWidth
-                  id="last-name"
-                  label="Last Name"
-                  value={formData.last_name}
-                  onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="birth_date"
-                  label="Birthdate"
-                  name="birth_date"
-                  type="date"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  inputProps={{
-                    max: new Date().toISOString().split('T')[0], // Set max date to today
-                  }}
-                  error={Boolean(errors.birth_date)}
-                  helperText={errors.birth_date}
-                  value={formData.birth_date}
-                  onChange={(e) => setFormData({ ...formData, birth_date: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Select
-                  options={countryOptions}
-                  placeholder="Select Country"
-                  name="country"
-                  id="country"
-                  error={Boolean(errors.country)}
-                  helperText={errors.country}
-                  value={countryOptions.find(option => option.value === formData.country)}
-                  onChange={(selectedOption) => setFormData({ ...formData, country: selectedOption })}
-                />
-              </Grid>
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Editing...' : 'Edit'}
+                </Button>
+              </Box>
             </Grid>
 
-            <Typography variant="body2" color="error">
-              {errors.non_field_errors}
-              {errors.message}
-            </Typography>
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Editing...' : 'Edit'}
-            </Button>
-            <Grid container direction="column">
-              <Grid item>
-                <Link href={`/users/${userId}`} variant="body2">
-                  Cancel
-                </Link>
-              </Grid>
+            <Grid item xs={12} md={4}>
+              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="old_password"
+                      label="Old Password"
+                      name="old_password"
+                      type="password"
+                      autoComplete="new-password"
+                      inputProps={{ minLength: 8 }}
+                      error={Boolean(errors.old_password)}
+                      helperText={errors.old_password}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="password"
+                      label="Password"
+                      name="password"
+                      type="password"
+                      autoComplete="new-password"
+                      inputProps={{ minLength: 8 }}
+                      error={Boolean(errors.password)}
+                      helperText={errors.password}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      required
+                      fullWidth
+                      id="password_confirmation"
+                      label="Confirm Password"
+                      name="password_confirmation"
+                      type="password"
+                      autoComplete="new-password"
+                      inputProps={{ minLength: 8 }}
+                      error={Boolean(errors.password_confirmation)}
+                      helperText={errors.password_confirmation}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  disabled={isLoading}
+                >
+                  Change password
+                </Button>
+              </Box>
             </Grid>
-          </Box>
+          </Grid>
+
+          <Link href={`/users/${userId}`} variant="body2">
+            Cancel
+          </Link>
+
         </Box>
       </Container>
     </ThemeProvider>
