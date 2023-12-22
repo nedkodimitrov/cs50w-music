@@ -10,6 +10,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CompactCardsCollection from './CompactCardsCollection';
+import Button from '@mui/material/Button';
 
 const defaultTheme = createTheme();
 
@@ -17,6 +18,7 @@ export default function UserDetails() {
   const { id } = useParams();
   const [userDetails, setUserDetails] = useState({});
   const [error, setError] = useState(null);
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     // Fetch the details of a specific user
@@ -53,6 +55,16 @@ export default function UserDetails() {
                   </Typography>
                 </div>
             </Container>
+
+            {userId == userDetails.id && 
+              <Button 
+                variant="contained" 
+                color="secondary" 
+                href={`/users/edit/`}
+              >
+                Edit your profile
+              </Button> 
+            }
 
             {/* Songs and Albums by the user */}
             <CompactCardsCollection url={`/songs/?artists__id=${userDetails.id}`} />
