@@ -49,7 +49,7 @@ class UserSerializer(CountryFieldMixin, serializers.ModelSerializer):
         old_password = validated_data.get("old_password")
 
         if password and not check_password(old_password, instance.password):
-            raise serializers.ValidationError({"old_password": "Old password is incorrect."})
+            raise serializers.ValidationError({"old_password": ["Old password is incorrect."]})
 
         return super().update(instance, validated_data)
     

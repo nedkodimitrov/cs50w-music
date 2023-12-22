@@ -348,7 +348,7 @@ class AuthUserViewSetTest(BaseAuthenticatedAPITest):
         self.old_user.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(self.old_user.password, old_password)
-        self.assertEqual(response.json()["old_password"], "Old password is incorrect.")
+        self.assertEqual(response.json()["old_password"][0], "Old password is incorrect.")
 
     def test_fail_user_detail_change_password_too_short(self):
         """Assert user cant change their password if they input a short new password"""
@@ -387,7 +387,7 @@ class AuthUserViewSetTest(BaseAuthenticatedAPITest):
         self.old_user.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(self.old_user.password, old_password)
-        self.assertEqual(response.json()["old_password"], "Old password is incorrect.")
+        self.assertEqual(response.json()["old_password"][0], "Old password is incorrect.")
 
     def test_fail_user_post(self):
         """A user should be created only using register"""
