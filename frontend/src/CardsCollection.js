@@ -5,7 +5,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -65,13 +64,9 @@ export default function CardsCollection({url, infiniteScroll = false, setNum = (
       <CssBaseline />
       <main>
         {/* Some info about the collection */}
-        <Box sx={{ bgcolor: 'background.paper', pt: 8, pb: 6 }}>
-          <Container maxWidth="sm">
-            <Typography variant="h5" align="center" color="text.primary" paragraph>
-              {entityType}
-            </Typography>
-          </Container>
-        </Box>
+        <Typography variant="h5" align="center" color="text.primary" paragraph>
+          {entityType}
+        </Typography>
         
         <Container sx={{ py: 8 }} maxWidth="xl">
           {/* Infinite scroll calls fetchdata when the user scrolls to the bottom of the page */}
@@ -80,7 +75,6 @@ export default function CardsCollection({url, infiniteScroll = false, setNum = (
             next={(nextUrl) => fetchData(nextUrl)}
             hasMore={!!nextUrl && infiniteScroll}
             loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />}
-            endMessage={infiniteScroll && <p>No more {entityType} to load.</p>}
           >
             <Grid container spacing={4}>
               {entities.map((entity) => (

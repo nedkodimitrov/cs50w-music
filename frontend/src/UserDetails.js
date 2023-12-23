@@ -56,7 +56,7 @@ export default function UserDetails() {
                 </div>
             </Container>
 
-            {userId == userDetails.id && 
+            {parseInt(userId) === userDetails.id && 
               <Button 
                 variant="contained" 
                 color="primary" 

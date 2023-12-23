@@ -36,7 +36,7 @@ export default function ReleaseCard({release, releaseType}) {
 
                 {/* Artists relateded to the song/album */}
                 <Typography>
-                    {Object.entries(release.artists_usernames).map(([artistId, username], index, array) => (
+                    {Object.entries(release.artists).map(([artistId, username], index, array) => (
                     <React.Fragment key={artistId}>
                         <Link href={`/users/${artistId}/`} variant="body2">
                             {username}

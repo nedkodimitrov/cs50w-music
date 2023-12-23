@@ -10,7 +10,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Link from '@mui/material/Link';
+import { Box } from '@mui/system';
+import ArtistsCardsCollection from './ArtistsCardsCollection';
+
 
 const defaultTheme = createTheme();
 
@@ -43,8 +45,8 @@ export default function PlaySong() {
           {Object.keys(songDetails).length > 0 && (
           <>
             <Container sx={{ py: 8 }} maxWidth="xl">
-              <div>
-                {/*Song cover image or default image for songs */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {/* Song cover image or default image for songs */}
                 <img
                   src={songDetails.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
                   alt="Song Cover"
@@ -59,23 +61,16 @@ export default function PlaySong() {
                   {songDetails.album}
                 </Typography>
 
-                {/* Artists related to the song */}
-                {Object.entries(songDetails.artists_usernames).map(([artistId, username], index, array) => (
-                  <React.Fragment key={artistId}>
-                    <Link href={`/users/${artistId}/`} variant="body2">
-                      {username}
-                    </Link>
-                    {index < array.length - 1 && ', '}
-                  </React.Fragment>
-                ))}
-
                 {/* Audio player for the song audio file*/}
                 <audio controls>
                   <source src={songDetails.audio_file} type="audio/mp3" />
                   Your browser does not support the audio tag.
                 </audio>
-              </div>
+              </Box>
             </Container>
+
+            {/* Artists related to the song */}
+            <ArtistsCardsCollection artists={songDetails.artists} />
           </>
         )}
       </main>

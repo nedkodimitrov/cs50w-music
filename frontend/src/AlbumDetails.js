@@ -2,7 +2,6 @@
 * Fetch and display details about an album
 * and songs that are featured as part of it
 */
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
@@ -10,8 +9,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Link from '@mui/material/Link';
 import CardsCollection from './CardsCollection';
+import ArtistsCardsCollection from './ArtistsCardsCollection';
+
 
 const defaultTheme = createTheme();
 
@@ -44,7 +44,6 @@ export default function AlbumDetails() {
           {Object.keys(albumDetails).length > 0 && (
             <>
               <Container sx={{ py: 8 }} maxWidth="xl">
-                <div>
                   {/* Cover image or default image for albums */}
                   <img
                     src={albumDetails.cover_image || 'https://wallpapers.com/images/featured/the-beauty-of-minimalist-music-0y4974i4hkly0qjv.jpg'}
@@ -57,21 +56,13 @@ export default function AlbumDetails() {
                     {albumDetails.title}
                     {albumDetails.release_date}
                   </Typography>
-                  
-                  {/* Artists related to the album */}
-                  {Object.entries(albumDetails.artists_usernames).map(([artistId, username], index, array) => (
-                    <React.Fragment key={artistId}>
-                      <Link href={`/users/${artistId}/`} variant="body2">
-                        {username}
-                      </Link>
-                      {index < array.length - 1 && ', '}
-                    </React.Fragment>
-                  ))}
-                </div>
               </Container>
 
               {/* Songs featured in the album */}
               <CardsCollection url={`/songs/?album__id=${albumDetails.id}`} infiniteScroll={true}/>
+
+            {/* Artists related to the alum */}
+            <ArtistsCardsCollection artists={albumDetails.artists} />
             </>
           )}
       </main>

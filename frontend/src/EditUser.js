@@ -2,7 +2,7 @@ import Select from 'react-select';
 import CountryList from 'react-select-country-list';
 import React, { useState, useEffect } from 'react';
 import axiosInstance from './axiosInstance';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
