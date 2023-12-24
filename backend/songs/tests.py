@@ -336,6 +336,21 @@ class AuthUserViewSetTest(BaseAuthenticatedAPITest):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json()["username"][0], "A user with that username already exists.")
 
+    def test_user_detail_change_password(self):
+        """Change user password"""
+        old_password = self.old_user.password
+        response = self.client.patch(
+            reverse("songs:users-detail", 
+                    args=[self.old_user.id]),
+            {"old_password": self.old_user_data["password"],
+             "password": self.new_user_data["password"],
+             "password_confirmation": self.new_user_data["password"]}, 
+            format="json")
+        self.old_user.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(self.old_user.password, old_password)
+        self.assertNotEqual(self.old_user.password, self.new_user_data["password"])  # The password is hashed
+
     def test_fail_user_detail_change_password_incorrect_old_password(self):
         """Assert user cant change their password if they input incorrect old password"""
         old_password = self.old_user.password
