@@ -10,6 +10,7 @@ import AlbumDetails from './AlbumDetails';
 import UserDetails from './UserDetails';
 import CreateRelease from './CreateRelease';
 import EditUser from './EditUser';
+import EditRelease from './EditRelease';
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem('token'));
@@ -32,12 +33,14 @@ const App = () => {
                 <Route path='/songs' element={<CardsCollection url={"/songs/"} infiniteScroll={true} />} />
                 <Route path='/songs/:id' element={<PlaySong />} />
                 <Route path='/songs/new/' element={<CreateRelease releaseType='song'/>} />
+                <Route path='/songs/:id/edit' element={<EditRelease releaseType='song'/>} />
                 <Route path='/albums' element={<CardsCollection url={"/albums/"} infiniteScroll={true} />} />
                 <Route path='/albums/:id' element={<AlbumDetails />} />
                 <Route path='/albums/new/' element={<CreateRelease releaseType='album'/>} />
+                <Route path='/albums/:id/edit' element={<EditRelease releaseType='album'/>} />
                 <Route path='/users' element={<CardsCollection url={"/users/"} infiniteScroll={true} />} />
                 <Route path='/users/:id' element={<UserDetails />} />
-                <Route path='/users/edit' element={isAuth && <EditUser/>} />
+                <Route path='/edit-profile' element={isAuth && <EditUser/>} />
               </Routes>
             </Layout>
           }

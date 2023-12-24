@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axiosInstance from './axiosInstance';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,22 +8,33 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 
+
 const defaultTheme = createTheme();
 
-export default function CreateRelease({releaseType="song"}) {
+export default function EditRelease({ releaseType = "song" }) {
   const [isLoading, setIsLoading] = useState(false);
   const [albums, setAlbums] = useState([]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
+  const { id } = useParams();
   const genreOptions = ["rap", "pop", "rock"].map(option => ({ value: option, label: option }));
   const isInitialMount = useRef(true);
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    audio_file: '',
+    cover_image: '',
+    release_date: '',
+    album: '',
+    genre: ''
+  });
 
   useEffect(() => {
     // Fetch albums based on user ID
@@ -60,11 +71,25 @@ export default function CreateRelease({releaseType="song"}) {
     }
   }, [releaseType, userId]);
 
+  useEffect(() => {
+    const fetchReleaseData = async () => {
+      try {
+        const response = await axiosInstance.get(`/${releaseType}s/${id}/`);
+        setFormData(response.data);
+      } catch (error) {
+        console.error('Error fetching release data:', error);
+      }
+    };
+
+    if (id) {
+      fetchReleaseData();
+    }
+  }, [id, releaseType]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const form = event.currentTarget;
-
     const newFormData = new FormData(form);
 
     const filteredFormData = new FormData();
@@ -73,29 +98,24 @@ export default function CreateRelease({releaseType="song"}) {
         filteredFormData.append(key, value);
       }
     }
-
+  
     try {
       setIsLoading(true);
-      
-      const response = await axiosInstance.post(`${releaseType}s/`, filteredFormData, {
+
+      const response = await axiosInstance.patch(`/${releaseType}s/${id}/`, filteredFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      if (response.status === 201) {
-        const releaseId = response.data.id;
-        navigate(`/${releaseType}s/${releaseId}`);
-      }
+      navigate(`/${releaseType}s/${id}`);
     } catch (error) {
-      console.log(error);
       handleErrors(error);
       setIsLoading(false);
     }
   };
-
+  
   const handleErrors = (error) => {
-    if (error.response && error.response.data) {
+    if (error.response?.data) {
       setErrors({});
       Object.keys(error.response.data).forEach((key) => {
         setErrors((prevErrors) => ({
@@ -121,30 +141,30 @@ export default function CreateRelease({releaseType="song"}) {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <CloudUploadIcon />
+            <EditIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Upload {releaseType}
+            Edit {releaseType}
           </Typography>
+
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
                   autoComplete="title"
                   name="title"
-                  required
                   fullWidth
                   id="title"
-                  label={`${releaseType.charAt(0).toUpperCase() + releaseType.slice(1)} Title`}  // Capitalize releaseType
-                  autoFocus
+                  label={`${releaseType.charAt(0).toUpperCase() + releaseType.slice(1)} Title`}
                   error={Boolean(errors.title)}
                   helperText={errors.title}
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 />
               </Grid>
-              {releaseType === "song" && 
+              {releaseType === "song" && (
                 <Grid item xs={12}>
                   <TextField
-                    required
                     fullWidth
                     id="audio_file"
                     label="Audio File"
@@ -153,11 +173,12 @@ export default function CreateRelease({releaseType="song"}) {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    onChange={(e) => setFormData({ ...formData, audio_file: e.target.files[0] })}
                     error={Boolean(errors.audio_file)}
                     helperText={errors.audio_file}
                   />
                 </Grid>
-              }
+              )}
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -168,6 +189,7 @@ export default function CreateRelease({releaseType="song"}) {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  onChange={(e) => setFormData({ ...formData, cover_image: e.target.files[0] })}
                   error={Boolean(errors.cover_image)}
                   helperText={errors.cover_image}
                 />
@@ -187,28 +209,34 @@ export default function CreateRelease({releaseType="song"}) {
                   }}
                   error={Boolean(errors.release_date)}
                   helperText={errors.release_date}
+                  value={formData.release_date}
+                  onChange={(e) => setFormData({ ...formData, release_date: e.target.value })}
                 />
               </Grid>
-              {releaseType === "song" && 
+              {releaseType === "song" && (
                 <>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      select
-                      label="Select album"
-                      name="album"
-                      id="album"  
-                      defaultValue=""
-                      error={Boolean(errors.album)}
-                      helperText={errors.album}
-                      variant="outlined"
-                    >
-                      {albums.map((album) => (
-                        <MenuItem key={album.id} value={album.id}>
-                          {album.title}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                  <TextField
+                    fullWidth
+                    select
+                    label="Select album"
+                    name="album"
+                    id="album"  
+                    error={Boolean(errors.album)}
+                    helperText={errors.album}
+                    variant="outlined"
+                    value={formData.album}
+                    onChange={(e) => setFormData({ ...formData, album: e.target.value })}
+                    InputLabelProps={{
+                      shrink: Boolean(formData.album),
+                    }}
+                  >
+                    {albums.map((album) => (
+                      <MenuItem key={album.id} value={album.id}>
+                        {album.title}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
@@ -216,11 +244,15 @@ export default function CreateRelease({releaseType="song"}) {
                       select
                       label="Select Genre"
                       name="genre"
-                      id="genre" 
-                      defaultValue=""
+                      id="genre"
+                      value={formData.genre}
+                      onChange={(e) => setFormData({ ...formData, genre: e.target.value })}
                       error={Boolean(errors.genre)}
                       helperText={errors.genre}
                       variant="outlined"
+                      InputLabelProps={{
+                        shrink: Boolean(formData.genre),
+                      }}
                     >
                       {genreOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -230,14 +262,8 @@ export default function CreateRelease({releaseType="song"}) {
                     </TextField>
                   </Grid>
                 </>
-              }
+              )}
             </Grid>
-
-            <Typography variant="body2" color="error">
-              {errors.non_field_errors}
-              {errors.message}
-            </Typography>
-
             <Button
               type="submit"
               fullWidth
@@ -245,17 +271,17 @@ export default function CreateRelease({releaseType="song"}) {
               sx={{ mt: 3, mb: 2 }}
               disabled={isLoading}
             >
-              {isLoading ? 'Uploading...' : `Upload ${releaseType}`}
+              {isLoading ? 'Editing...' : `Edit ${releaseType}`}
             </Button>
-
-            <Grid container direction="column">
-              <Grid item>
-                <Link href="/" variant="body2">
-                  Cancel
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
+
+          <Box component="form" id="form-2" onSubmit={(e) => e.preventDefault()} sx={{ mt: 3 }} encType="multipart/form-data">
+           
+          </Box>
+
+          <Link href={`/${releaseType}s/${id}`} variant="body2">
+            Cancel
+          </Link>
         </Box>
       </Container>
     </ThemeProvider>

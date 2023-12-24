@@ -60,7 +60,7 @@ export default function UserDetails() {
               <Button 
                 variant="contained" 
                 color="primary" 
-                href={`/users/edit/`}
+                href={`/edit-profile`}
               >
                 Edit your profile
               </Button> 

@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CardsCollection from './CardsCollection';
 import ArtistsCardsCollection from './ArtistsCardsCollection';
+import Button from '@mui/material/Button';
 
 
 const defaultTheme = createTheme();
@@ -19,6 +20,7 @@ export default function AlbumDetails() {
   const { id } = useParams();
   const [albumDetails, setAlbumDetails] = useState({});
   const [error, setError] = useState(null);
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchAlbumDetails = async () => {
@@ -57,6 +59,16 @@ export default function AlbumDetails() {
                     {albumDetails.release_date}
                   </Typography>
               </Container>
+
+            {parseInt(userId) in albumDetails.artists && 
+              <Button 
+                variant="contained" 
+                color="primary" 
+                href={`/albums/${id}/edit/`}
+              >
+                Edit
+              </Button> 
+            }
 
               {/* Songs featured in the album */}
               <CardsCollection url={`/songs/?album__id=${albumDetails.id}`} infiniteScroll={true}/>

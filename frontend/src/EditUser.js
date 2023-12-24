@@ -1,4 +1,3 @@
-import Select from 'react-select';
 import CountryList from 'react-select-country-list';
 import React, { useState, useEffect } from 'react';
 import axiosInstance from './axiosInstance';
@@ -14,6 +13,8 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import MenuItem from '@mui/material/MenuItem';
+
 
 const defaultTheme = createTheme();
 
@@ -31,7 +32,7 @@ export default function EditUser() {
     last_name: '',
     email: '',
     birth_date: '',
-    country: null,
+    country: '',
   });
 
   useEffect(() => {
@@ -51,6 +52,7 @@ export default function EditUser() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const form = event.currentTarget;
 
     try {
@@ -58,7 +60,6 @@ export default function EditUser() {
       const response = await axiosInstance.patch(`/users/${userId}/`, form);
       navigate(`/users/${userId}`);
     } catch (error) {
-      console.log(error);
       handleErrors(error);
       setIsLoading(false);
     }
@@ -109,7 +110,6 @@ export default function EditUser() {
                       fullWidth
                       id="username"
                       label="Username"
-                      autoFocus
                       error={Boolean(errors.username)}
                       helperText={errors.username}
                       value={formData.username}
@@ -123,6 +123,8 @@ export default function EditUser() {
                       fullWidth
                       id="first-name"
                       label="First Name"
+                      error={Boolean(errors.first_name)}
+                      helperText={errors.first_name}
                       value={formData.first_name}
                       onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                     />
@@ -134,6 +136,8 @@ export default function EditUser() {
                       fullWidth
                       id="last-name"
                       label="Last Name"
+                      error={Boolean(errors.last_name)}
+                      helperText={errors.last_name}
                       value={formData.last_name}
                       onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                     />
@@ -145,6 +149,8 @@ export default function EditUser() {
                       label="Email Address"
                       name="email"
                       autoComplete="email"
+                      error={Boolean(errors.email)}
+                      helperText={errors.email}
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
@@ -169,16 +175,27 @@ export default function EditUser() {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Select
-                      options={countryOptions}
-                      placeholder="Select Country"
+                    <TextField
+                      fullWidth
+                      select
+                      label="Select Country"
                       name="country"
                       id="country"
+                      value={formData.country}
+                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                       error={Boolean(errors.country)}
                       helperText={errors.country}
-                      value={countryOptions.find(option => option.value === formData.country)}
-                      onChange={(selectedOption) => setFormData({ ...formData, country: selectedOption })}
-                    />
+                      variant="outlined"
+                      InputLabelProps={{
+                        shrink: Boolean(formData.country),
+                      }}
+                    >
+                      {countryOptions.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   </Grid>
                 </Grid>
                 <Typography variant="body2" color="error">

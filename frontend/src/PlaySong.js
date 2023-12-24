@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import ArtistsCardsCollection from './ArtistsCardsCollection';
+import Button from '@mui/material/Button';
 
 
 const defaultTheme = createTheme();
@@ -20,6 +21,7 @@ export default function PlaySong() {
   const { id } = useParams();
   const [songDetails, setSongDetails] = useState({});
   const [error, setError] = useState(null);
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     // Fetch details about a specific song
@@ -68,6 +70,16 @@ export default function PlaySong() {
                 </audio>
               </Box>
             </Container>
+
+            {parseInt(userId) in songDetails.artists && 
+              <Button 
+                variant="contained" 
+                color="primary" 
+                href={`/songs/${id}/edit/`}
+              >
+                Edit
+              </Button> 
+            }
 
             {/* Artists related to the song */}
             <ArtistsCardsCollection artists={songDetails.artists} />
