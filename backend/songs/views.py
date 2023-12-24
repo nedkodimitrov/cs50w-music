@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
 from .helpers import add_artist_to_requested, remove_artist_from_requested, confirm_user_as_artist, remove_user_as_artist, add_song_to_playlist, remove_song_from_playlist
 from knox.models import AuthToken

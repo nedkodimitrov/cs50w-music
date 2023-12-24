@@ -1,7 +1,7 @@
 from django_countries.serializers import CountryFieldMixin
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password as django_contrib_validate_password
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from .models import User, Song, Playlist, Album
 from rest_framework import serializers
 
@@ -48,19 +48,21 @@ class UserSerializer(CountryFieldMixin, serializers.ModelSerializer):
         password = validated_data.get("password")
         old_password = validated_data.get("old_password")
 
-        if password and not check_password(old_password, instance.password):
-            raise serializers.ValidationError({"old_password": ["Old password is incorrect."]})
+        if password:
+            if not check_password(old_password, instance.password):
+                raise serializers.ValidationError({"old_password": ["Old password is incorrect."]})
+            validated_data['password'] = make_password(password)
 
         return super().update(instance, validated_data)
     
     def to_representation(self, instance):
         """Exclude email for other users"""
-        ret = super().to_representation(instance)
+        representation = super().to_representation(instance)
 
         if self.context["request"].user != instance:
-            ret.pop("email")
+            representation.pop("email")
 
-        return ret
+        return representation
     
 
 class LoginUserSerializer(serializers.Serializer):
