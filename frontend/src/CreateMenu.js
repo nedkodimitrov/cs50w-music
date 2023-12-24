@@ -3,11 +3,13 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CreateMenu() {
   const [CreateMenuAnchorEl, setCreateMenuAnchorEl] = useState(null);
   const isCreateMenuOpen = Boolean(CreateMenuAnchorEl);
+  const navigate = useNavigate();
 
   const handleCreateMenuOpen = (event) => {
     setCreateMenuAnchorEl(event.currentTarget);
@@ -47,8 +49,8 @@ export default function CreateMenu() {
         open={isCreateMenuOpen}
         onClose={handleCreateMenuClose}
       >
-        <MenuItem onClick={handleCreateMenuClose}>New Song</MenuItem>
-        <MenuItem onClick={handleCreateMenuClose}>New Album</MenuItem>
+        <MenuItem onClick={() => {navigate("/songs/new/"); handleCreateMenuClose();}}>New Song</MenuItem>
+        <MenuItem onClick={() => {navigate("/albums/new/"); handleCreateMenuClose();}}>New Album</MenuItem>
       </Menu>
     </>
   );

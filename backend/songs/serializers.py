@@ -49,7 +49,7 @@ class UserSerializer(CountryFieldMixin, serializers.ModelSerializer):
         old_password = validated_data.get("old_password")
 
         if password and not check_password(old_password, instance.password):
-            raise serializers.ValidationError({"old_password": "Old password is incorrect."})
+            raise serializers.ValidationError({"old_password": ["Old password is incorrect."]})
 
         return super().update(instance, validated_data)
     
@@ -76,18 +76,19 @@ class LoginUserSerializer(serializers.Serializer):
     
 
 class ReleaseSerializer(serializers.ModelSerializer):
-    artists_usernames = serializers.SerializerMethodField()
-
-    def get_artists_usernames(self, obj):
-        """dictionary with artist ids and their usernames"""
-        return {artist.id: artist.username for artist in obj.artists.all()}
+    def to_representation(self, instance):
+        """dictionary of artist ids and their usernames"""
+        representation = super().to_representation(instance)
+        representation['artists'] = {artist.id: artist.username for artist in instance.artists.all()}
+        return representation
 
 
 class SongSerializer(ReleaseSerializer):
     
     class Meta:
         model = Song
-        exclude = ("requested_artists" ,"artists")
+        exclude = ("requested_artists", )
+        extra_kwargs = {"artists": {"write_only": True}}
 
     def validate_album(self, album):
         """Check if the user is an artist of the album that they try to add the song to"""
@@ -100,7 +101,8 @@ class SongSerializer(ReleaseSerializer):
 class AlbumSerializer(ReleaseSerializer):
     class Meta:
         model = Album
-        exclude = ("requested_artists", "artists")
+        exclude = ("requested_artists", )
+        extra_kwargs = {"artists": {"write_only": True}}
 
 
 class PlaylistSerializer(serializers.ModelSerializer):

@@ -10,6 +10,7 @@ const SignOutMenuItem = ({setIsAuth}) => {
     axiosInstance.post('logout/')
         .then(() => {
             localStorage.removeItem('token');
+            localStorage.removeItem('userId');
             setIsAuth(false);
             navigate('/login');
         })

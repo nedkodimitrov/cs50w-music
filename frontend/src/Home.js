@@ -1,39 +1,22 @@
-import React, {useState} from 'react';
-import ReleaseCardsCollection from './ReleaseCardsCollection';
-import Button from '@mui/material/Button';
+/*
+* Home page showing the 10 newest songs and albums and the first 10 users alphabetically
+* and buttons that link to all songs/albums/users
+*/
+import React from 'react';
+import CompactCardsCollection from './CompactCardsCollection';
 import { useSearchParams } from 'react-router-dom';
 
-
 const Home = () => {
-  const [queryParams] = useSearchParams();
-  const queryParamsString = queryParams.toString();
-  const [numSongs, setNumSongs] = useState(0);
-  const [numAlbums, setNumAlbums] = useState(0);
+  const [searchParams] = useSearchParams();
+  const searchParamsString = searchParams.toString();
+
+  const generateUrl = (path) => `${path}${searchParamsString ? `?${searchParamsString}` : ''}`;
 
   return (
-    <div key={queryParamsString}> {/* re-render when query params change */}
-      {/*ReleaseCardsCollection parses the query params*/}
-      <ReleaseCardsCollection url={`/songs/`} setNum={setNumSongs}/>
-      { numSongs > 10 && 
-        <Button 
-          variant="contained" 
-          color="primary" 
-          href={!!queryParamsString? `/songs/?${queryParamsString}`: "/songs/"} 
-          id="all-songs-link">
-          View All {numSongs} Songs
-        </Button> 
-      }
-      
-      <ReleaseCardsCollection url={`/albums/`} setNum={setNumAlbums}/>
-      { numAlbums > 10 &&
-        <Button 
-          variant="contained" 
-          color="primary" 
-          href={!!queryParamsString? `/albums/?${queryParamsString}`: "/albums/"} 
-          id="all-albums-link">
-          View All {numAlbums} Albums
-        </Button>
-      }
+    <div key={searchParamsString}>
+      <CompactCardsCollection url={generateUrl('/songs/')} />
+      <CompactCardsCollection url={generateUrl('/albums/')} />
+      <CompactCardsCollection url={generateUrl('/users/')} />
     </div>
   );
 };

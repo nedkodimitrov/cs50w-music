@@ -1,3 +1,8 @@
+/*
+* Song player that displays information about a song
+* and an audio player for that song's audio file
+*/
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
@@ -5,7 +10,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Link from '@mui/material/Link';
+import { Box } from '@mui/system';
+import ArtistsCardsCollection from './ArtistsCardsCollection';
+import Button from '@mui/material/Button';
+
 
 const defaultTheme = createTheme();
 
@@ -13,8 +21,10 @@ export default function PlaySong() {
   const { id } = useParams();
   const [songDetails, setSongDetails] = useState({});
   const [error, setError] = useState(null);
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
+    // Fetch details about a specific song
     const fetchSongDetails = async () => {
       setError(null);
 
@@ -32,37 +42,49 @@ export default function PlaySong() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <main>
-        <Container sx={{ py: 8 }} maxWidth="xl">
+        <main>
           {error && <p>Error loading song details. Error: {error.message}.</p>}
           {Object.keys(songDetails).length > 0 && (
-            <div>
-              <img
-                src={songDetails.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
-                alt="Song Cover"
-                style={{ maxWidth: '50%' }}
-              />
-              <Typography variant="h6" color="text.primary" paragraph>
-                {songDetails.title}
-                {songDetails.release_date}
-                {songDetails.genre}
-                {songDetails.album}
-              </Typography>
-              {Object.entries(songDetails.artists_usernames).map(([artistId, username], index, array) => (
-                <React.Fragment key={artistId}>
-                  <Link href={`/users/${artistId}/`} variant="body2">
-                    {username}
-                  </Link>
-                  {index < array.length - 1 && ', '}
-                </React.Fragment>
-              ))}
-              <audio controls>
-                <source src={songDetails.audio_file} type="audio/mp3" />
-                Your browser does not support the audio tag.
-              </audio>
-            </div>
-          )}
-        </Container>
+          <>
+            <Container sx={{ py: 8 }} maxWidth="xl">
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {/* Song cover image or default image for songs */}
+                <img
+                  src={songDetails.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
+                  alt="Song Cover"
+                  style={{ maxWidth: '50%' }}
+                />
+
+                {/* Some information about the song like title, release_date, ...*/}
+                <Typography variant="h6" color="text.primary" paragraph>
+                  {songDetails.title}
+                  {songDetails.release_date}
+                  {songDetails.genre}
+                  {songDetails.album}
+                </Typography>
+
+                {/* Audio player for the song audio file*/}
+                <audio controls>
+                  <source src={songDetails.audio_file} type="audio/mp3" />
+                  Your browser does not support the audio tag.
+                </audio>
+              </Box>
+            </Container>
+
+            {parseInt(userId) in songDetails.artists && 
+              <Button 
+                variant="contained" 
+                color="primary" 
+                href={`/songs/${id}/edit/`}
+              >
+                Edit
+              </Button> 
+            }
+
+            {/* Artists related to the song */}
+            <ArtistsCardsCollection artists={songDetails.artists} />
+          </>
+        )}
       </main>
     </ThemeProvider>
   );

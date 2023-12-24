@@ -1,4 +1,3 @@
-import Select from 'react-select';
 import CountryList from 'react-select-country-list';
 import React, { useState } from 'react';
 import axiosInstance from './axiosInstance';
@@ -14,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import MenuItem from '@mui/material/MenuItem';
 
 const defaultTheme = createTheme();
 
@@ -22,21 +21,17 @@ export default function SignUp({setIsAuth}) {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const countryOptions = CountryList().getData();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
 
-    form.reportValidity();
-
-    if (!form.checkValidity()) {
-      return;
-    }
-
     try {
       setIsLoading(true);
       const response = await axiosInstance.post('register/', form);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.user.id);
       setIsAuth(true)
       navigate('/');
     } catch (error) {
@@ -77,7 +72,7 @@ export default function SignUp({setIsAuth}) {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -123,19 +118,23 @@ export default function SignUp({setIsAuth}) {
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="first_name"
                   fullWidth
-                  id="firstName"
+                  id="first-name"
                   label="First Name"
+                  error={Boolean(errors.first_name)}
+                  helperText={errors.first_name}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
                   autoComplete="family-name"
+                  name="last_name"
+                  fullWidth
+                  id="last-name"
+                  label="Last Name"
+                  error={Boolean(errors.last_name)}
+                  helperText={errors.last_name}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -145,16 +144,8 @@ export default function SignUp({setIsAuth}) {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Select
-                  options={CountryList().getData()}
-                  placeholder="Select Country"
-                  name="country"
-                  id="country"
-                  error={Boolean(errors.country)}
-                  helperText={errors.country}
+                  error={Boolean(errors.email)}
+                  helperText={errors.email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -173,6 +164,24 @@ export default function SignUp({setIsAuth}) {
                   error={Boolean(errors.birth_date)}
                   helperText={errors.birth_date}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Select Country"
+                  name="country"
+                  id="country"
+                  error={Boolean(errors.country)}
+                  helperText={errors.country}
+                  variant="outlined"
+                >
+                  {countryOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
             </Grid>
 
