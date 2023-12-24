@@ -128,6 +128,12 @@ export default function EditRelease({ releaseType = "song" }) {
     }
   };
 
+  if (formData.artists && !(parseInt(userId) in formData.artists)) {
+    return (
+      <p>{`You can't edit this ${releaseType}`}</p>
+    );
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
