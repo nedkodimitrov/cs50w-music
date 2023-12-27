@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import ArtistsCardsCollection from './ArtistsCardsCollection';
 import Button from '@mui/material/Button';
+import ConfirmButton from './ConfirmButton';
 
 
 const defaultTheme = createTheme();
@@ -79,6 +80,10 @@ export default function PlaySong() {
               >
                 Edit
               </Button> 
+            }
+
+            {songDetails.requested_artists && parseInt(userId) in songDetails.requested_artists && 
+              <ConfirmButton releaseType="songs" id={id}/>
             }
 
             {/* Artists related to the song */}

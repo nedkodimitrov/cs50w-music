@@ -12,6 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CardsCollection from './CardsCollection';
 import ArtistsCardsCollection from './ArtistsCardsCollection';
 import Button from '@mui/material/Button';
+import ConfirmButton from './ConfirmButton';
 
 
 const defaultTheme = createTheme();
@@ -70,8 +71,12 @@ export default function AlbumDetails() {
               </Button> 
             }
 
-              {/* Songs featured in the album */}
-              <CardsCollection url={`/songs/?album__id=${albumDetails.id}`} infiniteScroll={true}/>
+            {albumDetails.requested_artists && parseInt(userId) in albumDetails.requested_artists && 
+              <ConfirmButton releaseType="albums" id={id}/>
+            }
+
+            {/* Songs featured in the album */}
+            <CardsCollection url={`/songs/?album__id=${albumDetails.id}`} infiniteScroll={true}/>
 
             {/* Artists related to the alum */}
             <ArtistsCardsCollection artists={albumDetails.artists} />
