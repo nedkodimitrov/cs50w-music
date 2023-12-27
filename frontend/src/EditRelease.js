@@ -15,6 +15,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import Select from 'react-select';
 import RequesedArtistsCardsCollection from './RequesedArtistsCardsCollection';
+import DeleteButton from './DeleteButton';
+
 
 const defaultTheme = createTheme();
 
@@ -349,6 +351,8 @@ export default function EditRelease({ releaseType = "song" }) {
               <RequesedArtistsCardsCollection requestedArtists={formData.requested_artists} url={`/${releaseType}s/${id}/manage_requested_artists/`}/>
             </Grid>
           </Grid>
+
+          <DeleteButton id={id} releaseType={releaseType}/>
 
           <Link href={`/${releaseType}s/${id}`} variant="body2">
             Cancel
