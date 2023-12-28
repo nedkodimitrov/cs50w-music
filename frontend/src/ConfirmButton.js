@@ -18,7 +18,7 @@ const ConfirmButton = ({ releaseType, id }) => {
       variant="contained"
       sx={{ mt: 3, mb: 2 }}
     >
-      Confirm Request
+      Confirm Request to be added as an Artist
     </Button>
   );
 };

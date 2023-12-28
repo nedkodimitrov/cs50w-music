@@ -15,11 +15,13 @@ import UserCard from './UserCard';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import { useSearchParams } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import styles from './styles/CardsCollection.css';
 
 
 const defaultTheme = createTheme();
 
-export default function CardsCollection({url, infiniteScroll = false, setNum = (number) => {}}) {
+export default function CardsCollection({url, infiniteScroll = false}) {
   const [entities, setEntities] = useState([]);  // A list of users/songs/albums that will be displayed
   const [error, setError] = useState(null);
   const isInitialMount = useRef(true);
@@ -29,6 +31,7 @@ export default function CardsCollection({url, infiniteScroll = false, setNum = (
   const [searchParams] = useSearchParams();
   const searchParamsString = searchParams.toString();
   const [nextUrl, setNextUrl] = useState(url.includes(searchParamsString) ? url : `${url}?${searchParamsString}`);
+  const [num, setNum] = useState(0);
 
   // Fetch data and retry if response status is 429 Too many requests. Set nextUrl for follow up calls to the function.
   const fetchData = async () => {
@@ -62,33 +65,48 @@ export default function CardsCollection({url, infiniteScroll = false, setNum = (
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <main>
-        {/* Some info about the collection */}
-        <Typography variant="h5" align="center" color="text.primary" paragraph>
-          {entityType}
-        </Typography>
-        
-        <Container sx={{ py: 8 }} maxWidth="xl">
-          {/* Infinite scroll calls fetchdata when the user scrolls to the bottom of the page */}
-          <InfiniteScroll
-            dataLength={entities.length}
-            next={(nextUrl) => fetchData(nextUrl)}
-            hasMore={!!nextUrl && infiniteScroll}
-            loader={<CircularProgress size={24} style={{ margin: '24px auto' }} />}
-          >
-            <Grid container spacing={4}>
-              {entities.map((entity) => (
-                <Grid item key={entity.id} xs={6} sm={4} md={3} lg={2}>
-                  {/*depending on the type of the entity display either a user card or a release card that contains song/album */}
-                  {entityType === "users" && <UserCard user={entity}/>}
-                  {["songs", "albums"].includes(entityType) && <ReleaseCard release={entity} releaseType={entityType} />}
-                </Grid>
-              ))}
-            </Grid>
-          </InfiniteScroll>
-          {error && <Alert severity="error">Error loading {entityType}. {error}</Alert>}
+        <Container sx={{ py: 4, mb: 4, mt: 4 }}  maxWidth="xl" className='cards-collection-container'>
+          {/* Some info about the collection */}
+          <Typography variant="h5" align="center" color="text.primary" paragraph>
+            {entityType}
+          </Typography>
+          
+          <Container sx={{ py: 4}} maxWidth="xl">
+            {/* Infinite scroll calls fetchdata when the user scrolls to the bottom of the page */}
+            <InfiniteScroll
+              dataLength={entities.length}
+              next={(nextUrl) => fetchData(nextUrl)}
+              hasMore={!!nextUrl && infiniteScroll}
+              loader={<CircularProgress size={24} />}
+            >
+              <Grid container spacing={4}>
+                {entities.map((entity) => (
+                  <Grid item key={entity.id} xs={6} sm={4} md={3} lg={2}>
+                    {/*depending on the type of the entity display either a user card or a release card that contains song/album */}
+                    {entityType === "users" && <UserCard user={entity}/>}
+                    {["songs", "albums"].includes(entityType) && <ReleaseCard release={entity} releaseType={entityType} />}
+                  </Grid>
+                ))}
+              </Grid>
+            </InfiniteScroll>
+            {error && <Alert severity="error">Error loading {entityType}. {error}</Alert>}
+          </Container>
+
+          { infiniteScroll==false && num > 20 && 
+            <Button 
+              variant="contained" 
+              color="primary" 
+              href={url} 
+            >
+              View All {num} {entityType}
+            </Button> 
+          }
+
+          { num == 0 && 
+            <p>No {entityType}</p>
+          }
+
         </Container>
-      </main>
     </ThemeProvider>
   );
 }

@@ -9,8 +9,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CompactCardsCollection from './CompactCardsCollection';
+import CardsCollection from './CardsCollection';
 import Button from '@mui/material/Button';
+import { Box } from '@mui/system';
+import styles from './styles/UserDetails.css'
 
 const defaultTheme = createTheme();
 
@@ -43,32 +45,37 @@ export default function UserDetails() {
           {error && <p>Error loading user details. Error: {error.message}.</p>}
           {Object.keys(userDetails).length > 0 && (
             <>
-            <Container sx={{ py: 8 }} maxWidth="xl">
-                <div>
-                  {/* Information about the user */}
-                  <Typography variant="h6" color="text.primary" paragraph>
-                    {userDetails.username}
-                    {userDetails.first_name}
-                    {userDetails.last_name}
-                    {userDetails.country}
-                    {userDetails.birth_date}
-                  </Typography>
-                </div>
-            </Container>
+            {/* Information about the user */}
+            <Box className='user-details'>
+              <Container sx={{ py: 8 }} maxWidth="xl">
+                <Typography variant="h5" color="text.primary">
+                  User: {userDetails.username}
+                </Typography>
+                <Typography variant="h6" color="text.primary">
+                  Name: {`${userDetails.first_name} ${userDetails.last_name}`}
+                </Typography>
+                <Typography variant="h6" color="text.primary">
+                  Country: {userDetails.country}
+                </Typography>
+                <Typography variant="h6" color="text.primary">
+                  Birth date: {userDetails.birth_date}
+                </Typography>
+              </Container>
 
-            {parseInt(userId) === userDetails.id && 
-              <Button 
-                variant="contained" 
-                color="primary" 
-                href={`/edit-profile`}
-              >
-                Edit your profile
-              </Button> 
-            }
+              {parseInt(userId) === userDetails.id && 
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  href={`/edit-profile`}
+                >
+                  Edit your profile
+                </Button> 
+              }
+            </Box>
 
             {/* Songs and Albums by the user */}
-            <CompactCardsCollection url={`/songs/?artists__id=${userDetails.id}`} />
-            <CompactCardsCollection url={`/albums/?artists__id=${userDetails.id}`} />
+            <CardsCollection url={`/songs/?artists__id=${userDetails.id}`} />
+            <CardsCollection url={`/albums/?artists__id=${userDetails.id}`} />
           </>
         )}
       </main>

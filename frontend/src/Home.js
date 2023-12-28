@@ -3,7 +3,7 @@
 * and buttons that link to all songs/albums/users
 */
 import React from 'react';
-import CompactCardsCollection from './CompactCardsCollection';
+import CardsCollection from './CardsCollection';
 import { useSearchParams } from 'react-router-dom';
 
 const Home = () => {
@@ -14,9 +14,9 @@ const Home = () => {
 
   return (
     <div key={searchParamsString}>
-      <CompactCardsCollection url={generateUrl('/songs/')} />
-      <CompactCardsCollection url={generateUrl('/albums/')} />
-      <CompactCardsCollection url={generateUrl('/users/')} />
+      <CardsCollection url={generateUrl('/songs/')} />
+      <CardsCollection url={generateUrl('/albums/')} />
+      <CardsCollection url={generateUrl('/users/')} />
     </div>
   );
 };

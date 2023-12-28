@@ -14,7 +14,7 @@ export default function NotificationsMenu({ showText = false }) {
 
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
   const isNotificationsMenuOpen = Boolean(notificationsAnchorEl);
-  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [loadNotifications, setLoadNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const navigate = useNavigate();
@@ -32,17 +32,16 @@ export default function NotificationsMenu({ showText = false }) {
 
   const handleNotificationsMenuClose = () => {
     setNotificationsAnchorEl(null);
+    setLoadNotifications(false);
   };
 
   const handleLoadNotifications = async () => {
     try {
-      setLoadingNotifications(true);
+      setLoadNotifications(true);
       const response = await axiosInstance.get(`/../notifications/api/all_list/?max=100`);
       setNotifications(response.data.all_list);
     } catch (error) {
       console.error('Error fetching notifications.', error);
-    } finally {
-      setLoadingNotifications(false);
     }
   };
 
@@ -92,15 +91,18 @@ export default function NotificationsMenu({ showText = false }) {
             key={notification.id}
             onClick={() => {
               handleNotificationsMenuClose();
-              const releaseType = notification.target.startsWith("Song") ? "songs" : "albums";
+              const releaseType = notification.target && notification.target.startsWith("Song") ? "songs" : "albums";
               navigate(`/${releaseType}/${notification.target_object_id}`);
             }}
-            style={{ color: notification.unread ? 'inherit' : 'gray' }}
+            style={{
+              color: notification.unread ? 'inherit' : 'gray',
+              whiteSpace: 'normal',
+            }}
           >
             <Typography variant="body1">{notification.verb}</Typography>
           </MenuItem>
         ))}
-        <Button onClick={handleLoadNotifications} disabled={loadingNotifications}>
+        <Button onClick={handleLoadNotifications} disabled={loadNotifications}>
           All Notifications
         </Button>
       </Menu>

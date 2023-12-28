@@ -92,7 +92,8 @@ class ReleaseSerializer(serializers.ModelSerializer):
 
 
 class SongSerializer(ReleaseSerializer):
-    
+    album_title = serializers.SerializerMethodField()
+
     class Meta:
         model = Song
         exclude = ("requested_artists", "artists")
@@ -103,6 +104,9 @@ class SongSerializer(ReleaseSerializer):
             raise serializers.ValidationError("You must be an artist of the album to add a song to it.")
     
         return album
+    
+    def get_album_title(self, obj):
+        return obj.album.title if obj.album else None
         
 
 class AlbumSerializer(ReleaseSerializer):

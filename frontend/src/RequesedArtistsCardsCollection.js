@@ -24,7 +24,7 @@ export default function RequestedArtistsCardsCollection({ requestedArtists, url 
       </Typography>
 
       <Container maxWidth="xl">
-        <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <Box sx={{ maxHeight: '300px', overflowY: 'auto' }}>
           <Grid container spacing={2} justifyContent="center">
             {Object.entries(requestedArtists).map(([artistId, username]) => (
               <Grid item key={artistId} xs={12}>

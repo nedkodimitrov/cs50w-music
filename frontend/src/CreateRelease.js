@@ -248,13 +248,9 @@ export default function CreateRelease({releaseType="song"}) {
               {isLoading ? 'Uploading...' : `Upload ${releaseType}`}
             </Button>
 
-            <Grid container direction="column">
-              <Grid item>
-                <Link href="/" variant="body2">
-                  Cancel
-                </Link>
-              </Grid>
-            </Grid>
+            <Link href={'/'} variant="body2">
+              Cancel
+            </Link>
           </Box>
         </Box>
       </Container>

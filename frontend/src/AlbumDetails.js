@@ -9,11 +9,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CardsCollection from './CardsCollection';
+import { Box } from '@mui/system';
 import ArtistsCardsCollection from './ArtistsCardsCollection';
 import Button from '@mui/material/Button';
 import ConfirmButton from './ConfirmButton';
-
+import CardsCollection from './CardsCollection';
+import Grid from '@mui/material/Grid';
+import './styles/ReleaseDetails.css';
 
 const defaultTheme = createTheme();
 
@@ -25,7 +27,6 @@ export default function AlbumDetails() {
 
   useEffect(() => {
     const fetchAlbumDetails = async () => {
-      // Fetch the details of a specific album
       setError(null);
 
       try {
@@ -42,46 +43,53 @@ export default function AlbumDetails() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-        <main>
-          {error && <p>Error loading album details. Error: {error.message}.</p>}
-          {Object.keys(albumDetails).length > 0 && (
-            <>
-              <Container sx={{ py: 8 }} maxWidth="xl">
-                  {/* Cover image or default image for albums */}
-                  <img
-                    src={albumDetails.cover_image || 'https://wallpapers.com/images/featured/the-beauty-of-minimalist-music-0y4974i4hkly0qjv.jpg'}
-                    alt="Album Cover"
-                    style={{ maxWidth: '50%' }}
+      <main>
+        {error && <p className='load-error'>Error loading album details. Error: {error.message}.</p>}
+        {Object.keys(albumDetails).length > 0 && (
+          <Container sx={{ py: 8 }} maxWidth='xl'>
+            <Grid container spacing={4}>
+              <Grid item xs={12} sm={6}>
+                <img
+                  src={albumDetails.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
+                  alt="Album Cover"
+                  style={{ width: '100%', borderRadius: '8px' }}
                   />
-
-                  {/* Album details like title and release date */}
-                  <Typography variant="h6" color="text.primary" paragraph>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box className='release-details'>
+                  <Typography variant="h5" color="primary" paragraph>
                     {albumDetails.title}
-                    {albumDetails.release_date}
                   </Typography>
-              </Container>
+                  <Typography variant="h6" color="text.secondary" paragraph>
+                    Release date: {albumDetails.release_date}
+                  </Typography>
+                  <Box className="edit-button">
+                    {parseInt(userId) in albumDetails.artists && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        href={`/albums/${id}/edit/`}
+                      >
+                        Edit Album
+                      </Button>
+                    )}
 
-            {parseInt(userId) in albumDetails.artists && 
-              <Button 
-                variant="contained" 
-                color="primary" 
-                href={`/albums/${id}/edit/`}
-              >
-                Edit
-              </Button> 
-            }
+                    {albumDetails.requested_artists && parseInt(userId) in albumDetails.requested_artists && (
+                      <ConfirmButton releaseType="albums" id={id} />
+                    )}
+                  </Box>
+                </Box>
+                
+                {/* Artists related to the album */}
+                <ArtistsCardsCollection artists={albumDetails.artists} />
+              </Grid>
+            </Grid>
+          </Container>
+        )}
 
-            {albumDetails.requested_artists && parseInt(userId) in albumDetails.requested_artists && 
-              <ConfirmButton releaseType="albums" id={id}/>
-            }
+        {/* Songs featured in the album */}
+        {albumDetails.id && <CardsCollection url={`/songs/?album__id=${albumDetails.id}`} infiniteScroll={true}/>}
 
-            {/* Songs featured in the album */}
-            <CardsCollection url={`/songs/?album__id=${albumDetails.id}`} infiniteScroll={true}/>
-
-            {/* Artists related to the alum */}
-            <ArtistsCardsCollection artists={albumDetails.artists} />
-            </>
-          )}
       </main>
     </ThemeProvider>
   );
