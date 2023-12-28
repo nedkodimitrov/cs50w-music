@@ -1,5 +1,5 @@
 /*
-* A collection of max 10 users/songs/albums cards and a button that links to all
+* A collection of max 20 users/songs/albums cards and a button that links to all
 */
 
 import React, {useState} from 'react';
@@ -13,7 +13,7 @@ const CompactCardsCollection = ({url}) => {
   return (
     <>
       <CardsCollection url={url} setNum={setNum}/>
-      { num > 10 && 
+      { num > 20 && 
         <Button 
           variant="contained" 
           color="primary" 

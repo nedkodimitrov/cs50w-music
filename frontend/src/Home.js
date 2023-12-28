@@ -1,5 +1,5 @@
 /*
-* Home page showing the 10 newest songs and albums and the first 10 users alphabetically
+* Home page showing the 20 newest songs and albums and the first 20 users alphabetically
 * and buttons that link to all songs/albums/users
 */
 import React from 'react';
