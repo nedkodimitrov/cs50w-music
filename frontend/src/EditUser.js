@@ -106,7 +106,6 @@ export default function EditUser() {
                     <TextField
                       autoComplete="username"
                       name="username"
-                      required
                       fullWidth
                       id="username"
                       label="Username"

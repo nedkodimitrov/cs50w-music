@@ -79,18 +79,24 @@ class LoginUserSerializer(serializers.Serializer):
 
 class ReleaseSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        """dictionary of artist ids and their usernames"""
+        """represent artists (and requested artists) as a dictionary of id-username pairs"""
         representation = super().to_representation(instance)
+
         representation['artists'] = {artist.id: artist.username for artist in instance.artists.all()}
+
+        user = self.context["request"].user
+        if user in instance.artists.all() or user in instance.requested_artists.all():
+            representation['requested_artists'] = {artist.id: artist.username for artist in instance.requested_artists.all()}
+
         return representation
 
 
 class SongSerializer(ReleaseSerializer):
-    
+    album_title = serializers.SerializerMethodField()
+
     class Meta:
         model = Song
-        exclude = ("requested_artists", )
-        extra_kwargs = {"artists": {"write_only": True}}
+        exclude = ("requested_artists", "artists")
 
     def validate_album(self, album):
         """Check if the user is an artist of the album that they try to add the song to"""
@@ -98,13 +104,15 @@ class SongSerializer(ReleaseSerializer):
             raise serializers.ValidationError("You must be an artist of the album to add a song to it.")
     
         return album
+    
+    def get_album_title(self, obj):
+        return obj.album.title if obj.album else None
         
 
 class AlbumSerializer(ReleaseSerializer):
     class Meta:
         model = Album
-        exclude = ("requested_artists", )
-        extra_kwargs = {"artists": {"write_only": True}}
+        exclude = ("requested_artists", "artists")
 
 
 class PlaylistSerializer(serializers.ModelSerializer):

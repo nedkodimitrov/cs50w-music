@@ -13,6 +13,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
+import Select from 'react-select';
+import RequesedArtistsCardsCollection from './RequesedArtistsCardsCollection';
+import DeleteButton from './DeleteButton';
 
 
 const defaultTheme = createTheme();
@@ -26,6 +29,8 @@ export default function EditRelease({ releaseType = "song" }) {
   const { id } = useParams();
   const genreOptions = ["rap", "pop", "rock"].map(option => ({ value: option, label: option }));
   const isInitialMount = useRef(true);
+  const [potentialArtists, setPotentialArtists] = useState([]);
+  const [potentialArtistsSearchTerm, setPotentialArtistsSearchTerm] = useState('');
   
   const [formData, setFormData] = useState({
     title: '',
@@ -33,8 +38,25 @@ export default function EditRelease({ releaseType = "song" }) {
     cover_image: '',
     release_date: '',
     album: '',
-    genre: ''
+    genre: '',
+    artists: {},
+    requested_artists: {}
   });
+
+  useEffect(() => {
+    // Fetch artists based on the search term
+    const fetchArtists = async () => {
+      try {
+        const response = await axiosInstance.get(`/users/?search=${potentialArtistsSearchTerm}`);
+        setPotentialArtists(response.data.results);
+
+      } catch (error) {
+        console.error("Error fetching artists.", error);
+      }
+    };
+
+    fetchArtists();
+  }, [releaseType, potentialArtistsSearchTerm]);
 
   useEffect(() => {
     // Fetch albums based on user ID
@@ -128,15 +150,25 @@ export default function EditRelease({ releaseType = "song" }) {
     }
   };
 
-  if (formData.artists && !(parseInt(userId) in formData.artists)) {
-    return (
-      <p>{`You can't edit this ${releaseType}`}</p>
-    );
-  }
+  const handleSubmitRequestArtist = async (event) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.post(`/${releaseType}s/${id}/manage_requested_artists/`, form);
+      window.location.reload();
+    } catch (error) {
+      handleErrors(error);
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box
           sx={{
@@ -153,137 +185,174 @@ export default function EditRelease({ releaseType = "song" }) {
             Edit {releaseType}
           </Typography>
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="title"
-                  name="title"
-                  fullWidth
-                  id="title"
-                  label={`${releaseType.charAt(0).toUpperCase() + releaseType.slice(1)} Title`}
-                  error={Boolean(errors.title)}
-                  helperText={errors.title}
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                />
-              </Grid>
-              {releaseType === "song" && (
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    id="audio_file"
-                    label="Audio File"
-                    name="audio_file"
-                    type="file"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setFormData({ ...formData, audio_file: e.target.files[0] })}
-                    error={Boolean(errors.audio_file)}
-                    helperText={errors.audio_file}
-                  />
-                </Grid>
-              )}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="cover_image"
-                  label="Cover Image"
-                  name="cover_image"
-                  type="file"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  onChange={(e) => setFormData({ ...formData, cover_image: e.target.files[0] })}
-                  error={Boolean(errors.cover_image)}
-                  helperText={errors.cover_image}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="release_date"
-                  label="Release Date"
-                  name="release_date"
-                  type="date"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  inputProps={{
-                    max: new Date().toISOString().split('T')[0], // Set max date to today
-                  }}
-                  error={Boolean(errors.release_date)}
-                  helperText={errors.release_date}
-                  value={formData.release_date}
-                  onChange={(e) => setFormData({ ...formData, release_date: e.target.value })}
-                />
-              </Grid>
-              {releaseType === "song" && (
-                <>
+          <Grid container spacing={6}>
+            <Grid item xs={12} md={7}>
+              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
                   <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    select
-                    label="Select album"
-                    name="album"
-                    id="album"  
-                    error={Boolean(errors.album)}
-                    helperText={errors.album}
-                    variant="outlined"
-                    value={formData.album}
-                    onChange={(e) => setFormData({ ...formData, album: e.target.value })}
-                    InputLabelProps={{
-                      shrink: Boolean(formData.album),
-                    }}
-                  >
-                    {albums.map((album) => (
-                      <MenuItem key={album.id} value={album.id}>
-                        {album.title}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    <TextField
+                      autoComplete="title"
+                      name="title"
+                      fullWidth
+                      id="title"
+                      label={`${releaseType.charAt(0).toUpperCase() + releaseType.slice(1)} Title`}
+                      error={Boolean(errors.title)}
+                      helperText={errors.title}
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    />
+                  </Grid>
+                  {releaseType === "song" && (
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        id="audio_file"
+                        label="Audio File"
+                        name="audio_file"
+                        type="file"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={(e) => setFormData({ ...formData, audio_file: e.target.files[0] })}
+                        error={Boolean(errors.audio_file)}
+                        helperText={errors.audio_file}
+                      />
+                    </Grid>
+                  )}
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      id="cover_image"
+                      label="Cover Image"
+                      name="cover_image"
+                      type="file"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      onChange={(e) => setFormData({ ...formData, cover_image: e.target.files[0] })}
+                      error={Boolean(errors.cover_image)}
+                      helperText={errors.cover_image}
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
-                      select
-                      label="Select Genre"
-                      name="genre"
-                      id="genre"
-                      value={formData.genre}
-                      onChange={(e) => setFormData({ ...formData, genre: e.target.value })}
-                      error={Boolean(errors.genre)}
-                      helperText={errors.genre}
-                      variant="outlined"
+                      id="release_date"
+                      label="Release Date"
+                      name="release_date"
+                      type="date"
                       InputLabelProps={{
-                        shrink: Boolean(formData.genre),
+                        shrink: true,
                       }}
-                    >
-                      {genreOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                      inputProps={{
+                        max: new Date().toISOString().split('T')[0], // Set max date to today
+                      }}
+                      error={Boolean(errors.release_date)}
+                      helperText={errors.release_date}
+                      value={formData.release_date}
+                      onChange={(e) => setFormData({ ...formData, release_date: e.target.value })}
+                    />
                   </Grid>
-                </>
-              )}
+                  {releaseType === "song" && (
+                    <>
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          select
+                          label="Select album"
+                          name="album"
+                          id="album"  
+                          error={Boolean(errors.album)}
+                          helperText={errors.album}
+                          variant="outlined"
+                          value={formData.album || ""}
+                          onChange={(e) => setFormData({ ...formData, album: e.target.value })}
+                          InputLabelProps={{
+                            shrink: Boolean(formData.album),
+                          }}
+                        >
+                        {albums.map((album) => (
+                          <MenuItem key={album.id} value={album.id}>
+                            {album.title}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          select
+                          label="Select Genre"
+                          name="genre"
+                          id="genre"
+                          value={formData.genre || ""}
+                          onChange={(e) => setFormData({ ...formData, genre: e.target.value })}
+                          error={Boolean(errors.genre)}
+                          helperText={errors.genre}
+                          variant="outlined"
+                          InputLabelProps={{
+                            shrink: Boolean(formData.genre),
+                          }}
+                        >
+                          {genreOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+                    </>
+                  )}
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Editing...' : `Edit ${releaseType}`}
+                </Button>
+              </Box>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Editing...' : `Edit ${releaseType}`}
-            </Button>
-          </Box>
 
-          <Box component="form" id="form-2" onSubmit={(e) => e.preventDefault()} sx={{ mt: 3 }} encType="multipart/form-data">
-           
-          </Box>
+            <Grid item xs={12} md={5}>
+              <Box component="form" onSubmit={handleSubmitRequestArtist} sx={{ mt: 3 }}>
+                <Grid item xs={12}>
+                  <Select
+                    required
+                    options={potentialArtists
+                      .filter((artist) => 
+                        !Object.keys(formData.requested_artists).includes(artist.id.toString()) && 
+                        !Object.keys(formData.artists).includes(artist.id.toString())
+                      )
+                      .map((artist) => ({ value: artist.id, label: artist.username }))
+                    }
+                    placeholder="Request an artist"
+                    name="artist_id"
+                    id="request-artist"
+                    onInputChange={(value) => setPotentialArtistsSearchTerm(value)}
+                    isSearchable
+                    error={Boolean(errors.album)}
+                    helperText={errors.album}
+                  />
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Requesting...' : `Request`}
+                </Button>
+              </Box>
+
+              <RequesedArtistsCardsCollection requestedArtists={formData.requested_artists} url={`/${releaseType}s/${id}/manage_requested_artists/`}/>
+            </Grid>
+          </Grid>
+
+          <DeleteButton id={id} releaseType={releaseType}/>
 
           <Link href={`/${releaseType}s/${id}`} variant="body2">
             Cancel
