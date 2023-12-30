@@ -24,5 +24,6 @@ urlpatterns = [
     path("notifications/", include(notifications.urls, namespace="notifications")),
 ]
 
+# static files are served from media in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

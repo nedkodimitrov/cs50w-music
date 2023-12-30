@@ -1,3 +1,8 @@
+/*
+A collection of usercards to display the requested artists of a song/album.
+Here artists are passed as a dictionary of id-username pairs instead of a url from where they can be fetched like in CardsCollection.js
+*/
+
 import React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -10,6 +15,7 @@ import Box from '@mui/material/Box';
 export default function RequestedArtistsCardsCollection({ requestedArtists, url }) {
   const handleSubmitCancelRequest = async (artistId) => {
     try {
+      /* Cancel the request of an artis */
       const response = await axiosInstance.delete(url, { data: { artist_id: artistId } });
       window.location.reload();
     } catch (error) {
@@ -29,10 +35,13 @@ export default function RequestedArtistsCardsCollection({ requestedArtists, url 
             {Object.entries(requestedArtists).map(([artistId, username]) => (
               <Grid item key={artistId} xs={12}>
                 <Grid container spacing={2} alignItems="center">
+                  {/* requested artist card */}
                   <Grid item xs={6}>
                     <UserCard user={{ id: artistId, username: username }} />
                   </Grid>
                   <Grid item xs={6}>
+
+                    {/* Button to cancel the request of an artist */}
                     <Button
                       onClick={() => handleSubmitCancelRequest(artistId)}
                       fullWidth

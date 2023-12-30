@@ -1,34 +1,35 @@
+"""Custom permission classes for a the song app."""
+
 from rest_framework import permissions
 
 
 class IsArtistOrReadOnly(permissions.BasePermission):
+    """Allows read-only access or editing/deleting if the user is in the artists list."""
+
     def has_object_permission(self, request, view, obj):
-        # Allow GET, HEAD, and OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
             return True
-
-        # Deny permission for editing or deleting if the user is not in the artists list.
         return request.user in obj.artists.all()
 
 
 class IsPlaylistOwner(permissions.BasePermission):
+    """Allows access only to the owner of a playlist."""
+
     def has_object_permission(self, request, view, obj):
-        # Deny permission if the user is not the owner.
         return obj.owner == request.user
 
 
 class IsRequestedArtist(permissions.BasePermission):
+    """Allows access only to users in the requested artists list."""
+
     def has_object_permission(self, request, view, obj):
-        # Deny permission if the user is not in the requested artists list
         return request.user in obj.requested_artists.all()
-    
+
 
 class IsUserOrReadOnly(permissions.BasePermission):
+    """Allows read-only access or updating/deleting if the user is authenticated as the user"""
+
     def has_object_permission(self, request, view, obj):
-        # Allow GET, HEAD, and OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
             return True
-
-        # Allow a user to update or delete themselves
         return request.user == obj
-    

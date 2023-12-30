@@ -1,3 +1,9 @@
+"""
+Tests for user registration, login,
+creating, editing and deleting song/album/playlist
+Requesting additional artists to a song/album
+"""
+
 import datetime
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile

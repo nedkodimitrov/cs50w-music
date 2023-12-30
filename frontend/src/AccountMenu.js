@@ -1,3 +1,7 @@
+/* Menu that contains a link to the user's profile page and sign out link;
+   and handlers for opening and closing the menu
+*/
+
 import React, { useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,13 +13,10 @@ import { useNavigate } from 'react-router-dom';
 
 export default function AccountMenu({setIsAuth}) {
   const accountMenuId = 'primary-search-account-menu';
-
   const [accountAnchorEl, setAccountAnchorEl] = useState(null);
   const isAccountMenuOpen = Boolean(accountAnchorEl);
-
-  const navigate = useNavigate();
-
   const userId = localStorage.getItem('userId')
+  const navigate = useNavigate();
 
   const handleAccountMenuOpen = (event) => {
     setAccountAnchorEl(event.currentTarget);
@@ -27,6 +28,7 @@ export default function AccountMenu({setIsAuth}) {
 
   return (
     <>
+    {/* Account menu icon */}
       <IconButton
         size="large"
         edge="end"
@@ -39,6 +41,7 @@ export default function AccountMenu({setIsAuth}) {
         <AccountCircle />
       </IconButton>
 
+      {/* Account menu*/}
       <Menu
         anchorEl={accountAnchorEl}
         anchorOrigin={{

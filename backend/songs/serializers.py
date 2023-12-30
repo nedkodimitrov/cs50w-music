@@ -39,6 +39,7 @@ class UserSerializer(CountryFieldMixin, serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        """Pop password confirmation before user register"""
         validated_data.pop('password_confirmation')
         user = User.objects.create_user(**validated_data)
         return user
@@ -78,6 +79,7 @@ class LoginUserSerializer(serializers.Serializer):
     
 
 class ReleaseSerializer(serializers.ModelSerializer):
+    """Common for song and album"""
     def to_representation(self, instance):
         """represent artists (and requested artists) as a dictionary of id-username pairs"""
         representation = super().to_representation(instance)
@@ -106,6 +108,7 @@ class SongSerializer(ReleaseSerializer):
         return album
     
     def get_album_title(self, obj):
+        """Include the album title in the response"""
         return obj.album.title if obj.album else None
         
 

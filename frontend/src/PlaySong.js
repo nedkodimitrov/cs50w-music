@@ -1,3 +1,8 @@
+/*
+* Song page that displays details about a song
+* and a audio player to play the song audio
+*/
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
@@ -22,6 +27,7 @@ export default function PlaySong() {
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
+    // Inital fetch of song details
     const fetchSongDetails = async () => {
       setError(null);
 
@@ -46,17 +52,21 @@ export default function PlaySong() {
             <Grid container spacing={4}>
               <Grid item xs={12} sm={6}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {/* Song cover image */}
                   <img
                     src={songDetails.cover_image || 'https://wallpapers.com/images/featured/music-notes-zpmz2slc377qu3wd.jpg'}
                     alt="Song Cover"
                     style={{ width: '100%', borderRadius: '8px' }}
                   />
+                  {/* Song audio player */}
                   <audio controls className="audio-player">
                     <source src={songDetails.audio_file} type="audio/mp3" />
                     Your browser does not support the audio tag.
                   </audio>
                 </Box>
               </Grid>
+
+              {/* Album details - title, release date, genre, album, artists */}
               <Grid item xs={12} sm={6}>
                 <Box className='release-details'>
                   <Typography variant="h5" color="primary" paragraph>
@@ -74,6 +84,8 @@ export default function PlaySong() {
                       {songDetails.album_title}
                     </Link>
                   </Typography>
+
+                  {/* Button to edit the song when the user is an artist of the song */}
                   <Box className="edit-button">
                     {parseInt(userId) in songDetails.artists && (
                       <Button
@@ -85,6 +97,7 @@ export default function PlaySong() {
                       </Button>
                     )}
 
+                    {/* Button to confirm when user is requested as an artist of the album */}
                     {songDetails.requested_artists && parseInt(userId) in songDetails.requested_artists && (
                       <ConfirmButton releaseType="songs" id={id} />
                     )}

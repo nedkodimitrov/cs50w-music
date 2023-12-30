@@ -20,7 +20,7 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ["username", "country"]
 
     def create(self, request, *args, **kwargs):
-        """A new user should be created using register."""
+        """A new user should be created using the register endpoint."""
         return Response({"detail": "Use register."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
     def destroy(self, request, *args, **kwargs):
@@ -41,6 +41,8 @@ class RegistrationAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
+        # respond with user details and authentication token
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)[1]
@@ -57,6 +59,8 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+
+        # respond with user details and authentication token
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)[1]
@@ -128,6 +132,7 @@ class PlaylistViewSet(viewsets.ModelViewSet):
     search_fields = ["title"]
 
     def get_queryset(self):
+        """Show only the current user's playlist ordered from newest to oldest"""
         return Playlist.objects.filter(owner=self.request.user).order_by("-created_at")
 
     def perform_create(self, serializer):

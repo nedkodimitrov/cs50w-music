@@ -1,3 +1,8 @@
+/*
+A collection of usercards to display the artists of a song/album.
+Here artists are passed as a dictionary of id-username pairs instead of a url from where they can be fetched like in CardsCollection.js
+*/
+
 import React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -11,6 +16,7 @@ export default function ArtistsCardsCollection({ artists }) {
       <Typography variant="h5" align="center" color="text.primary" paragraph>
         Artists
       </Typography>
+
       <Container maxWidth="xl">
         <Grid container spacing={4}>
           {Object.entries(artists).map(([artistId, username]) => (
@@ -19,7 +25,7 @@ export default function ArtistsCardsCollection({ artists }) {
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </Container> 
     </Container>
   );
 }
