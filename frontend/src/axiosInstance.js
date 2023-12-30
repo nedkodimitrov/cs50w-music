@@ -1,9 +1,12 @@
+/* Axios instance for making API requests with a predefined base URL */
+
 import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8000/api/',
 });
 
+// Intercept requests to attach authentication token if available
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -17,6 +20,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+// Intercept responses to handle unauthorized access (401) by redirecting to login
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {

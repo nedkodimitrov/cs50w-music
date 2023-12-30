@@ -15,7 +15,11 @@ export default function Navbar({ isAuth, setIsAuth }) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+
+          {/* Menu for creating a song/album */}
           {isAuth && <CreateMenu />}
+
+          {/* Link to the home page*/}
           <Link href="/" underline="none" color="inherit" variant="h6">
             <Typography
               variant="h6"
@@ -34,9 +38,16 @@ export default function Navbar({ isAuth, setIsAuth }) {
               CwM
             </Typography>
           </Link>
+
+          {/* search bar that tkes user to the home page with search params */}
           <SearchBar />
+
           <Box sx={{ flexGrow: 1 }} />
+
+          {/* Mobile menu that contains Notifications menu and Account menus */}
           {isAuth && <MobileMenu setIsAuth={setIsAuth}/>}
+
+          {/* link to sign in */}
           {!isAuth && <Link href="/login" variant="body2" id="custom_link">Sign in</Link>}
         </Toolbar>
       </AppBar>

@@ -1,3 +1,5 @@
+/* page for creating a new user */
+
 import CountryList from 'react-select-country-list';
 import React, { useState } from 'react';
 import axiosInstance from './axiosInstance';
@@ -23,6 +25,8 @@ export default function SignUp({setIsAuth}) {
   const navigate = useNavigate();
   const countryOptions = CountryList().getData();
 
+  // make an api call to register with the form data and save token and user id in the local storage
+  // saving token in local storage might be vulnerable to cross-site-scripting attacks
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -35,11 +39,13 @@ export default function SignUp({setIsAuth}) {
       setIsAuth(true)
       navigate('/');
     } catch (error) {
+      // Set form fields errors
       handleErrors(error);
       setIsLoading(false);
     }
   };
 
+  // Set form fields errors
   const handleErrors = (error) => {
     if (error.response && error.response.data) {
       setErrors({});
@@ -66,12 +72,17 @@ export default function SignUp({setIsAuth}) {
             alignItems: 'center',
           }}
         >
+
+          {/* locked out icon */}
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+
+            {/* Form for creating a new user - username, password, password confirmation, first name, last name, email, country, birth date */}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -185,11 +196,13 @@ export default function SignUp({setIsAuth}) {
               </Grid>
             </Grid>
 
+             {/* non-field errors */}
             <Typography variant="body2" color="error">
               {errors.non_field_errors}
               {errors.message}
             </Typography>
 
+            {/* submit button for creating a new user */}
             <Button
               type="submit"
               fullWidth
@@ -199,6 +212,8 @@ export default function SignUp({setIsAuth}) {
               >
                 {isLoading ? 'Signing Up...' : 'Sign Up'}
             </Button>
+
+            {/* links to login and home page */}
             <Grid container direction="column">
               <Grid item>
                 <Link href="/login" variant="body2">

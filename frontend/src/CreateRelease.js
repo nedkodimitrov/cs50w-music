@@ -1,3 +1,5 @@
+/* page for creating a new song/album */
+
 import React, { useEffect, useState, useRef } from 'react';
 import axiosInstance from './axiosInstance';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +28,7 @@ export default function CreateRelease({releaseType="song"}) {
   const isInitialMount = useRef(true);
 
   useEffect(() => {
-    // Fetch albums based on user ID
+    // Fetch avalaible albums when creating a new song
     const fetchAlbums = async () => {
       try {
         let nextUrl = `/albums/?artists__id=${userId}`;
@@ -64,9 +66,9 @@ export default function CreateRelease({releaseType="song"}) {
     event.preventDefault();
 
     const form = event.currentTarget;
-
     const newFormData = new FormData(form);
 
+    // Exclude empty fields from the form data
     const filteredFormData = new FormData();
     for (const [key, value] of newFormData.entries()) {
       if (value !== '' && value?.name !== '') {
@@ -77,6 +79,7 @@ export default function CreateRelease({releaseType="song"}) {
     try {
       setIsLoading(true);
       
+      // Call the API to create a new song/album with the filtered data
       const response = await axiosInstance.post(`${releaseType}s/`, filteredFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -84,16 +87,19 @@ export default function CreateRelease({releaseType="song"}) {
       });
 
       if (response.status === 201) {
+        // Navigate to the new song/album after successfully creating it
         const releaseId = response.data.id;
         navigate(`/${releaseType}s/${releaseId}`);
       }
     } catch (error) {
+      // Set form fields errors
       console.log(error);
       handleErrors(error);
       setIsLoading(false);
     }
   };
 
+  // Set form fields errors
   const handleErrors = (error) => {
     if (error.response && error.response.data) {
       setErrors({});
@@ -120,12 +126,16 @@ export default function CreateRelease({releaseType="song"}) {
             alignItems: 'center',
           }}
         >
+          {/* Upload icon */}
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <CloudUploadIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
             Upload {releaseType}
           </Typography>
+
+          {/* Form for a new song/album - title, release date, cover image (and for song also audio file, genre, album) */}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -233,11 +243,13 @@ export default function CreateRelease({releaseType="song"}) {
               }
             </Grid>
 
+            {/* non-field errors */}
             <Typography variant="body2" color="error">
               {errors.non_field_errors}
               {errors.message}
             </Typography>
 
+            {/* Submit button */}
             <Button
               type="submit"
               fullWidth
@@ -248,6 +260,7 @@ export default function CreateRelease({releaseType="song"}) {
               {isLoading ? 'Uploading...' : `Upload ${releaseType}`}
             </Button>
 
+            {/* Cancel button that takes user to the home page*/}
             <Link href={'/'} variant="body2">
               Cancel
             </Link>

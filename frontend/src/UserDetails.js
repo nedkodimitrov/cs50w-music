@@ -45,7 +45,7 @@ export default function UserDetails() {
           {error && <p>Error loading user details. Error: {error.message}.</p>}
           {Object.keys(userDetails).length > 0 && (
             <>
-            {/* Information about the user */}
+            {/* Information about the user - username, first name, last name, country, birth date*/}
             <Box className='user-details'>
               <Container sx={{ py: 8 }} maxWidth="xl">
                 <Typography variant="h5" color="text.primary">
@@ -62,6 +62,7 @@ export default function UserDetails() {
                 </Typography>
               </Container>
 
+              {/* button to edit the user profile if the current user is the user */}
               {parseInt(userId) === userDetails.id && 
                 <Button 
                   variant="contained" 

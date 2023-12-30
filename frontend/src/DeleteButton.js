@@ -1,3 +1,8 @@
+/*
+Button for deleting a song/album 
+Asks for confirmation
+*/
+
 import React from 'react';
 import Button from '@mui/material/Button';
 import axiosInstance from './axiosInstance';
@@ -18,6 +23,7 @@ const DeleteButton = ({id, releaseType }) => {
     setOpen(false);
   };
 
+  // Call the API to delete a song/album
   const handleDelete = async () => {
     try {
       await axiosInstance.delete(`/${releaseType}s/${id}/`);
@@ -29,6 +35,7 @@ const DeleteButton = ({id, releaseType }) => {
 
   return (
     <>
+      {/* the delete button */}
       <Button
         variant="contained"
         color="error"
@@ -38,6 +45,7 @@ const DeleteButton = ({id, releaseType }) => {
         Delete
       </Button>
 
+      {/* Dialog that asks for confirmation */}
       <Dialog
         open={open}
         onClose={handleClose}

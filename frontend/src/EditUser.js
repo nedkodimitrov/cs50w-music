@@ -1,3 +1,7 @@
+/*
+page for editting a user details
+*/
+
 import CountryList from 'react-select-country-list';
 import React, { useState, useEffect } from 'react';
 import axiosInstance from './axiosInstance';
@@ -36,6 +40,7 @@ export default function EditUser() {
   });
 
   useEffect(() => {
+    // Fetch user data that can be editted
     const fetchUserData = async () => {
       try {
         const response = await axiosInstance.get(`/users/${userId}/`);
@@ -57,14 +62,18 @@ export default function EditUser() {
 
     try {
       setIsLoading(true);
+      // Call the API to edit a user data
       const response = await axiosInstance.patch(`/users/${userId}/`, form);
+      // Navigate to the user page after successful edit
       navigate(`/users/${userId}`);
     } catch (error) {
+      // Set form fields errors
       handleErrors(error);
       setIsLoading(false);
     }
   };
 
+  // Set form fields errors
   const handleErrors = (error) => {
     if (error.response?.data) {
       setErrors({});
@@ -91,15 +100,18 @@ export default function EditUser() {
             alignItems: 'center',
           }}
         >
+          {/* user account icon */}
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <AccountCircleOutlinedIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
             Edit your profile
           </Typography>
 
           <Grid container spacing={6}>
             <Grid item xs={12} md={8}>
+              {/* Form for editting user details - username, first name, last name, email, country, birth date) */}
               <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -197,10 +209,14 @@ export default function EditUser() {
                     </TextField>
                   </Grid>
                 </Grid>
+
+                {/* non-field errors */}
                 <Typography variant="body2" color="error">
                   {errors.non_field_errors}
                   {errors.message}
                 </Typography>
+
+                {/* submit button for edit user */}
                 <Button
                   type="submit"
                   fullWidth
@@ -214,6 +230,7 @@ export default function EditUser() {
             </Grid>
 
             <Grid item xs={12} md={4}>
+              {/* Form for changing password - old password, new password, confirm new password */}
               <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -259,6 +276,8 @@ export default function EditUser() {
                     />
                   </Grid>
                 </Grid>
+
+                {/* submit button for changing password */}
                 <Button
                   type="submit"
                   fullWidth
@@ -272,6 +291,7 @@ export default function EditUser() {
             </Grid>
           </Grid>
 
+          {/* Cancel button that takes user to the user profile page*/}
           <Link href={`/users/${userId}`} variant="body2">
             Cancel
           </Link>

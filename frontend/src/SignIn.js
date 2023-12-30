@@ -1,3 +1,5 @@
+/* page for logging in a user */
+
 import React, { useState } from 'react';
 import axiosInstance from './axiosInstance';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +19,8 @@ const SignIn = ({ setIsAuth }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // make an api call to login with the form data and save token and user id in the local storage
+  // saving token in local storage might be vulnerable to cross-site-scripting attacks
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -29,6 +33,7 @@ const SignIn = ({ setIsAuth }) => {
       setIsAuth(true)
       navigate('/');
     } catch (error) {
+      // Set non-fields errors (like invalid credentials)
       setError(error.response?.data?.non_field_errors !== undefined ? error.response.data.non_field_errors : error.message);
       setIsLoading(false);
     }
@@ -45,12 +50,16 @@ const SignIn = ({ setIsAuth }) => {
           alignItems: 'center',
         }}
       >
+        {/* locked out icon */}
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
+
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+
+        {/* Form for logging in a user - username, password */}
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -78,6 +87,8 @@ const SignIn = ({ setIsAuth }) => {
               {error}
             </Typography>
           )}
+
+          {/* submit button for logging in a user */}
           <Button
             type="submit"
             fullWidth
@@ -87,6 +98,8 @@ const SignIn = ({ setIsAuth }) => {
           >
             {isLoading ? 'Signing In...' : 'Sign In'}
           </Button>
+
+          {/* links to register and home page */}
           <Grid container direction="column">
             <Grid item>
               <Link href="/register" variant="body2">

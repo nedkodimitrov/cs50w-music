@@ -1,7 +1,9 @@
 /*
-* Fetch and display a collection of user/song/album cards depending on the provided url
+* A collection of user/song/album cards fetched from the provided url.
+* The type of cards is determined by the url.
 * Supports infinite scroll by fetching data from the next url
 */
+
 import React, { useEffect, useState, useRef } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -92,7 +94,8 @@ export default function CardsCollection({url, infiniteScroll = false}) {
             {error && <Alert severity="error">Error loading {entityType}. {error}</Alert>}
           </Container>
 
-          { infiniteScroll==false && num > 20 && 
+          {/* Button that links to a page where all the cards will be displayed if infinite scroll is disabled here */}
+          { infiniteScroll===false && num > 20 && 
             <Button 
               variant="contained" 
               color="primary" 
@@ -102,7 +105,8 @@ export default function CardsCollection({url, infiniteScroll = false}) {
             </Button> 
           }
 
-          { num == 0 && 
+          {/* Display no songs/albums/users when the result of the data fetch is empty */}
+          { num === 0 && 
             <p>No {entityType}</p>
           }
 

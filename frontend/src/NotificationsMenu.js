@@ -1,3 +1,5 @@
+/* Menu containing user's notifications */
+
 import React, { useEffect, useState } from 'react';
 import axiosInstance from './axiosInstance';
 import Menu from '@mui/material/Menu';
@@ -22,6 +24,7 @@ export default function NotificationsMenu({ showText = false }) {
   const handleNotificationsMenuOpen = async (event) => {
     try {
       setNotificationsAnchorEl(event.currentTarget);
+      // Load unread notifications
       const response = await axiosInstance.get(`/../notifications/api/unread_list/?mark_as_read=true`);
       setNotifications(response.data.unread_list);
       setUnreadNotificationsCount(response.data.unread_count);
@@ -35,6 +38,7 @@ export default function NotificationsMenu({ showText = false }) {
     setLoadNotifications(false);
   };
 
+  // Load 100 most recent notifications (read and unread)
   const handleLoadNotifications = async () => {
     try {
       setLoadNotifications(true);
@@ -46,6 +50,7 @@ export default function NotificationsMenu({ showText = false }) {
   };
 
   useEffect(() => {
+    // Initial fetch of the count of the unread notifications that will be displayed on the notifications bell icon badge
     const fetchNotificationsCount = async () => {
       try {
         const response = await axiosInstance.get(`/../notifications/api/unread_count/`);
@@ -60,6 +65,7 @@ export default function NotificationsMenu({ showText = false }) {
 
   return (
     <>
+      {/* Notifications bell icon with a badge with the count of the unread notifications */}
       <IconButton
         size="large"
         aria-label={`show ${unreadNotificationsCount} new notifications`}
@@ -71,6 +77,7 @@ export default function NotificationsMenu({ showText = false }) {
         </Badge>
       </IconButton>
 
+      {/* Notifications menu */}
       <Menu
         anchorEl={notificationsAnchorEl}
         anchorOrigin={{
@@ -92,9 +99,11 @@ export default function NotificationsMenu({ showText = false }) {
             onClick={() => {
               handleNotificationsMenuClose();
               const releaseType = notification.target && notification.target.startsWith("Song") ? "songs" : "albums";
+              /* When clicking on a notification, navigate to the target song/album */
               navigate(`/${releaseType}/${notification.target_object_id}`);
             }}
             style={{
+              // Display read notifications with gray text
               color: notification.unread ? 'inherit' : 'gray',
               whiteSpace: 'normal',
             }}
@@ -102,6 +111,8 @@ export default function NotificationsMenu({ showText = false }) {
             <Typography variant="body1">{notification.verb}</Typography>
           </MenuItem>
         ))}
+
+        {/* Button to load all notifcations */}
         <Button onClick={handleLoadNotifications} disabled={loadNotifications}>
           All Notifications
         </Button>

@@ -1,3 +1,5 @@
+/* Mobile menu that contains Notifications menu and Account menus */
+
 import React, { useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -29,7 +31,7 @@ export default function MobileMenu({ setIsAuth }) {
         <NotificationsMenu/>
         <AccountMenu setIsAuth={setIsAuth}/>
       </Box>
-      {/* For small screens, display a menu with more icon that contains Notifications and Account */}
+      {/* For small screens, display a menu with "more" icon that contains Notifications and Account */}
       <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
         <IconButton
           size="large"

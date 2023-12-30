@@ -1,3 +1,8 @@
+/*
+page for editting a song/album 
+and also for requesting additional artists to be added to it
+*/
+
 import React, { useEffect, useState, useRef } from 'react';
 import axiosInstance from './axiosInstance';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -44,7 +49,7 @@ export default function EditRelease({ releaseType = "song" }) {
   });
 
   useEffect(() => {
-    // Fetch artists based on the search term
+    // Fetch artists that can be requested to be added in the song/album
     const fetchArtists = async () => {
       try {
         const response = await axiosInstance.get(`/users/?search=${potentialArtistsSearchTerm}`);
@@ -59,7 +64,7 @@ export default function EditRelease({ releaseType = "song" }) {
   }, [releaseType, potentialArtistsSearchTerm]);
 
   useEffect(() => {
-    // Fetch albums based on user ID
+    // Fetch avalaible albums when editting a song
     const fetchAlbums = async () => {
       try {
         let nextUrl = `/albums/?artists__id=${userId}`;
@@ -94,6 +99,7 @@ export default function EditRelease({ releaseType = "song" }) {
   }, [releaseType, userId]);
 
   useEffect(() => {
+    // Fetch song/album data that can be editted
     const fetchReleaseData = async () => {
       try {
         const response = await axiosInstance.get(`/${releaseType}s/${id}/`);
@@ -114,6 +120,7 @@ export default function EditRelease({ releaseType = "song" }) {
     const form = event.currentTarget;
     const newFormData = new FormData(form);
 
+    // Exclude empty fields from the form data
     const filteredFormData = new FormData();
     for (const [key, value] of newFormData.entries()) {
       if (value !== '' && value?.name !== '') {
@@ -123,19 +130,22 @@ export default function EditRelease({ releaseType = "song" }) {
   
     try {
       setIsLoading(true);
-
+      // Call the API to edit a song/album with the filtered data
       const response = await axiosInstance.patch(`/${releaseType}s/${id}/`, filteredFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+      // Navigate to the song/album after successfully editting it
       navigate(`/${releaseType}s/${id}`);
     } catch (error) {
+      // Set form fields errors
       handleErrors(error);
       setIsLoading(false);
     }
   };
   
+  // Set form fields errors
   const handleErrors = (error) => {
     if (error.response?.data) {
       setErrors({});
@@ -150,6 +160,7 @@ export default function EditRelease({ releaseType = "song" }) {
     }
   };
 
+  // Request an artist to be added to the song/album
   const handleSubmitRequestArtist = async (event) => {
     event.preventDefault();
 
@@ -178,15 +189,19 @@ export default function EditRelease({ releaseType = "song" }) {
             alignItems: 'center',
           }}
         >
+          {/* Edit icon */}
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <EditIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
             Edit {releaseType}
           </Typography>
 
           <Grid container spacing={6}>
             <Grid item xs={12} md={7}>
+
+              {/* Form for editting a song/album - title, release date, cover image (and for song also audio file, genre, album) */}
               <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -304,6 +319,8 @@ export default function EditRelease({ releaseType = "song" }) {
                     </>
                   )}
                 </Grid>
+
+                {/* Submit button for editting a song/album */}
                 <Button
                   type="submit"
                   fullWidth
@@ -317,10 +334,12 @@ export default function EditRelease({ releaseType = "song" }) {
             </Grid>
 
             <Grid item xs={12} md={5}>
+              {/* Form for requesting aritsts to be added to the song/album */}
               <Box component="form" onSubmit={handleSubmitRequestArtist} sx={{ mt: 3 }}>
                 <Grid item xs={12}>
                   <Select
                     required
+                    // Exclude the users that are already in the artists or requested_artists lists
                     options={potentialArtists
                       .filter((artist) => 
                         !Object.keys(formData.requested_artists).includes(artist.id.toString()) && 
@@ -337,6 +356,8 @@ export default function EditRelease({ releaseType = "song" }) {
                     helperText={errors.album}
                   />
                 </Grid>
+
+                {/* Submit button for requesting an artist */}
                 <Button
                   type="submit"
                   fullWidth
@@ -348,12 +369,15 @@ export default function EditRelease({ releaseType = "song" }) {
                 </Button>
               </Box>
 
+              {/* Display the currently requested artists and buttons for each to cancel the request */}
               <RequesedArtistsCardsCollection requestedArtists={formData.requested_artists} url={`/${releaseType}s/${id}/manage_requested_artists/`}/>
             </Grid>
           </Grid>
 
+          {/* Button to delete the song/album. Asks for confirmation. */}
           <DeleteButton id={id} releaseType={releaseType}/>
 
+          {/* Cancel button that takes user to the song/album page*/}
           <Link href={`/${releaseType}s/${id}`} variant="body2">
             Cancel
           </Link>

@@ -1,8 +1,13 @@
+/* 
+Menu that includes links to create song and create album
+and handlers for opening and closing the menu
+*/
+
 import React, { useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -23,6 +28,7 @@ export default function CreateMenu() {
 
   return (
     <>
+    {/* Create menu icon */}
       <IconButton
         size="large"
         edge="start"
@@ -31,9 +37,10 @@ export default function CreateMenu() {
         sx={{ mr: 2 }}
         onClick={handleCreateMenuOpen}
       >
-        <MenuIcon />
+        <AddIcon />
       </IconButton>
 
+      {/* Create menu */}
       <Menu
         anchorEl={CreateMenuAnchorEl}
         anchorOrigin={{
