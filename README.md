@@ -1,7 +1,7 @@
 # cs50w-music
 
 ## Description
-This website, made with Django and React and inspired by Spotify, lets users and artists team up to upload, work together on songs and albums, and play music. It also has a sign-in system and sends notifications to keep things lively.
+This web application, made with Django and React and inspired by Spotify, lets users and artists team up to upload, work together on songs and albums, and play music. It also has a sign-in system and sends notifications to keep things lively.
 
 ## How to run
 ### Setup
