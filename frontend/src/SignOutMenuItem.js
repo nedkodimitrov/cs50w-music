@@ -1,3 +1,4 @@
+/* Menu item that includes Sign out link and handles sign out. */
 import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import axiosInstance from './axiosInstance';
@@ -9,6 +10,7 @@ const SignOutMenuItem = ({setIsAuth}) => {
     const handleSignOut = () => {
     axiosInstance.post('logout/')
         .then(() => {
+            // Remove token and user id from the local storage
             localStorage.removeItem('token');
             localStorage.removeItem('userId');
             setIsAuth(false);
