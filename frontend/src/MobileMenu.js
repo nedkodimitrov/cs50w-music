@@ -1,4 +1,4 @@
-/* Mobile menu that contains Notifications menu and Account menus */
+/* Mobile menu that contains Notifications menu and Account menu */
 
 import React, { useState } from 'react';
 import Menu from '@mui/material/Menu';

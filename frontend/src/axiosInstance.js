@@ -1,4 +1,7 @@
-/* Axios instance for making API requests with a predefined base URL */
+/* 
+Axios instance for making API requests with a predefined base URL.
+And handle token authentication.
+*/
 
 import axios from 'axios';
 
