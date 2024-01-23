@@ -355,6 +355,7 @@ Get the count of the current user's unread notifications
 
 
 ## Additional information
+- Admin panel at http://127.0.0.1:8000/admin/
 - The frontend is functional, though not polished extensively, as the primary focus was on backend development.  
 - Storing the authentication token in the browser's local storage poses a security vulnerability, as it could be susceptible to theft through cross-site scripting (XSS) attacks.  
 - Static files are served from media in development; CDN server would be more appropriate in production  
