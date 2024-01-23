@@ -1,5 +1,7 @@
 # cs50w-music - CS50w final project
 
+#### Video Demo:  [https://youtu.be/zlQ08J3Y5fI](https://www.youtube.com/watch?v=zlQ08J3Y5fI)
+
 ## Description
 This web application, made with Django and React and inspired by Spotify, lets users and artists team up to upload, work together on songs and albums, and play music. It also has a sign-in system and sends notifications to keep things lively.
 
@@ -353,7 +355,7 @@ Get the count of the current user's unread notifications
 
 
 ## Additional information
-Frontend is WIP.  
-Storing the authentication token in the browser's local storage poses a security vulnerability, as it could be susceptible to theft through cross-site scripting (XSS) attacks.  
-Static files are served from media in development; CDN server would be more appropriate in production  
-Using incremental song and album ids and not random (like youtube does) because this app doesn't support unlisted songs/albums  
+- The frontend is functional, though not polished extensively, as the primary focus was on backend development.  
+- Storing the authentication token in the browser's local storage poses a security vulnerability, as it could be susceptible to theft through cross-site scripting (XSS) attacks.  
+- Static files are served from media in development; CDN server would be more appropriate in production  
+- Using incremental song and album ids and not random (like youtube does) because this app doesn't support unlisted songs/albums  
